@@ -141,5 +141,17 @@ public class PantallaActual implements Screen{
 	public Nibolas getNibolas(){
 		return myNibolas;
 	}
+	
+	public void setCamera(OrthographicCamera camera){
+		this.camera = camera;
+	}
+	
+	public OrthographicCamera getCamera(){
+		return camera;
+	}
+	
+	public World getWorld(){
+		return world;
+	}
 
 }

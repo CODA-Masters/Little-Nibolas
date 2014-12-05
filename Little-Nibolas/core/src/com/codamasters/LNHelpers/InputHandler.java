@@ -11,6 +11,7 @@ public class InputHandler implements InputProcessor {
     private float scaleFactorX;
     private float scaleFactorY;
     private Nibolas myNibolas;
+    private PantallaActual pantalla;
 
     public InputHandler(PantallaActual miPantalla, float scaleFactorX,
             float scaleFactorY) {
@@ -18,6 +19,7 @@ public class InputHandler implements InputProcessor {
         this.scaleFactorX = scaleFactorX;
         this.scaleFactorY = scaleFactorY;
         myNibolas = miPantalla.getNibolas();
+        pantalla = miPantalla;
 
     }
 
@@ -58,7 +60,7 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-    	myNibolas.move(screenX, screenY);
+    	myNibolas.move(pantalla, screenX, screenY);
         return false;
     }
 
