@@ -1,12 +1,12 @@
 package com.codamasters;
 
 import com.badlogic.gdx.Game;
-import com.codamasters.screens.GameScreen;
+import com.codamasters.screens.PantallaActual;
 
 public class LittleNibolas extends Game {
 	@Override
 	public void create() {
-		setScreen(new GameScreen());
+		setScreen(new PantallaActual());
 	}
 
 	@Override

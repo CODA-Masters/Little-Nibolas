@@ -1,6 +1,5 @@
 package com.codamasters.screens;
 
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
@@ -23,8 +22,10 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
+import com.codamasters.LNHelpers.InputHandler;
+import com.codamasters.gameobjects.Nibolas;
 
-public class GameScreen implements Screen{
+public class PantallaActual implements Screen{
 	
 	private World world;
 	private Box2DDebugRenderer debugRenderer;
@@ -35,6 +36,7 @@ public class GameScreen implements Screen{
 	private final int VELOCITYITERATIONS = 8, POSITIONITERATIONS = 3;
 	
 	private Array<Body> tmpBodies = new Array<Body>();
+	private Nibolas myNibolas;
 
 	@Override
 	public void render(float delta) {
@@ -64,32 +66,42 @@ public class GameScreen implements Screen{
 
 	@Override
 	public void resize(int width, int height) {
-		camera.viewportWidth = width / 25;
-		camera.viewportHeight = height / 25;
+		//camera.viewportWidth = width / 25;
+		//camera.viewportHeight = height / 25;
 		
 	}
 
 	@Override
 	public void show() {
 		
+		float screenWidth = Gdx.graphics.getWidth();
+		float screenHeight = Gdx.graphics.getHeight();
+		float gameWidth = 203;
+		float gameHeight = screenHeight / (screenWidth / gameWidth);
+		
 		world = new World(new Vector2(0, -9.81f), true);
 		debugRenderer = new Box2DDebugRenderer();
 		batch = new SpriteBatch();
-
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		
+		camera = new OrthographicCamera(gameWidth/10, gameHeight/10);
+		myNibolas = new Nibolas(world, 0, 1, .5f);
+		world.setContactFilter(myNibolas);
+		world.setContactListener(myNibolas);
+		
 		
 		BodyDef bodyDef = new BodyDef();
 		FixtureDef fixtureDef = new FixtureDef();
 		
+		
 		// GROUND
 		// body definition
 		bodyDef.type = BodyType.StaticBody;
-		bodyDef.position.set(0, 0);
+		bodyDef.position.set(0, -2);
 
 		// ground shape
 		ChainShape groundShape = new ChainShape();
 		
-		groundShape.createChain(new Vector2[] {new Vector2(-50, 0), new Vector2(50,0)});
+		groundShape.createChain(new Vector2[] {new Vector2(-50, -2), new Vector2(50,-2)});
 
 		// fixture definition
 		fixtureDef.shape = groundShape;
@@ -102,6 +114,7 @@ public class GameScreen implements Screen{
 		
 		groundShape.dispose();
 		
+		Gdx.input.setInputProcessor(new InputHandler(this,gameWidth/10,gameHeight/10));
 		
 	}
 
@@ -123,6 +136,10 @@ public class GameScreen implements Screen{
 	public void dispose() {
 		world.dispose();
 		debugRenderer.dispose();
+	}
+	
+	public Nibolas getNibolas(){
+		return myNibolas;
 	}
 
 }
