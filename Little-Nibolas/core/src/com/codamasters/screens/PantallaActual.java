@@ -60,6 +60,8 @@ public class PantallaActual implements Screen{
 			}
 		batch.end();
 		
+		myNibolas.update();
+		
 		debugRenderer.render(world, camera.combined);
 		
 	}
@@ -84,7 +86,7 @@ public class PantallaActual implements Screen{
 		batch = new SpriteBatch();
 		
 		camera = new OrthographicCamera(gameWidth/10, gameHeight/10);
-		myNibolas = new Nibolas(world, 0, 1, .5f);
+		myNibolas = new Nibolas(world, this, 0, 1, .5f);
 		world.setContactFilter(myNibolas);
 		world.setContactListener(myNibolas);
 		

@@ -26,13 +26,16 @@ public class Nibolas implements ContactFilter, ContactListener {
 	private Fixture fixture;
 	public final float WIDTH, HEIGHT;
 	private Vector2 velocity = new Vector2();
+	private Vector3 target = new Vector3();
 	private float movementForce = 5, jumpPower = 10;
 	private World world;
+	private PantallaActual pantalla;
 
-	public Nibolas(World world, float x, float y, float width) {
+	public Nibolas(World world, PantallaActual pantalla, float x, float y, float width) {
 		WIDTH = width;
 		HEIGHT = width * 2;
 		this.world = world;
+		this.pantalla = pantalla;
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
@@ -45,15 +48,22 @@ public class Nibolas implements ContactFilter, ContactListener {
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		fixtureDef.restitution = 0;
-		fixtureDef.friction = .8f;
+		fixtureDef.friction = 0;
 		fixtureDef.density = 3;
 
 		body = world.createBody(bodyDef);
 		fixture = body.createFixture(fixtureDef);
+		
+		
 	}
 
 	public void update() {
 		body.applyForceToCenter(velocity, true);
+		
+		if(target.x >= body.getPosition().x-0.05 && target.x <= body.getPosition().x+0.05){
+			body.setLinearVelocity(0,body.getLinearVelocity().y);
+		}
+		
 	}
 
 	@Override
@@ -83,16 +93,17 @@ public class Nibolas implements ContactFilter, ContactListener {
 		//body.applyLinearImpulse(0, jumpPower, body.getWorldCenter().x, body.getWorldCenter().y, true);
 	}
 	
-	private Vector3 tmp = new Vector3();
 	
-	public void move(PantallaActual pantalla, int screenX, int screenY){
+	public void move(int screenX, int screenY){
 		OrthographicCamera cam = pantalla.getCamera();
-		cam.unproject(tmp.set(screenX,screenY,0));
+		cam.unproject(target.set(screenX,screenY,0));
 		pantalla.setCamera(cam);
-		if(tmp.x > body.getPosition().x){
+		
+		
+		if(target.x > body.getPosition().x){
 			body.setLinearVelocity(5,0);
 		}
-		else{
+		else if (target.x < body.getPosition().x){
 			body.setLinearVelocity(-5,0);
 		}
 	}

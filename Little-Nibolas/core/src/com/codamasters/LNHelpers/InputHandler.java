@@ -25,8 +25,7 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        screenX = scaleX(screenX);
-        screenY = scaleY(screenY);
+    	myNibolas.move(screenX, screenY);
         
         myNibolas.onClick();
         return true;
@@ -44,7 +43,6 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-    	
         return false;
     }
 
@@ -60,7 +58,6 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-    	myNibolas.move(pantalla, screenX, screenY);
         return false;
     }
 
