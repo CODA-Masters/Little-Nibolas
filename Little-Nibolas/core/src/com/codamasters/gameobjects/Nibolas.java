@@ -20,7 +20,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.codamasters.screens.PantallaActual;
 
-public class Nibolas implements ContactFilter, ContactListener {
+public class Nibolas{
 
 	private Body body;
 	private Fixture fixture;
@@ -28,13 +28,11 @@ public class Nibolas implements ContactFilter, ContactListener {
 	private Vector2 velocity = new Vector2();
 	private Vector3 target = new Vector3();
 	private float movementForce = 5, jumpPower = 10;
-	private World world;
 	private PantallaActual pantalla;
 
 	public Nibolas(World world, PantallaActual pantalla, float x, float y, float width) {
 		WIDTH = width;
 		HEIGHT = width * 2;
-		this.world = world;
 		this.pantalla = pantalla;
 
 		BodyDef bodyDef = new BodyDef();
@@ -54,6 +52,8 @@ public class Nibolas implements ContactFilter, ContactListener {
 		body = world.createBody(bodyDef);
 		fixture = body.createFixture(fixtureDef);
 		
+		shape.dispose();
+		
 		
 	}
 
@@ -66,31 +66,8 @@ public class Nibolas implements ContactFilter, ContactListener {
 		
 	}
 
-	@Override
-	public boolean shouldCollide(Fixture fixtureA, Fixture fixtureB) {
-		if(fixtureA == fixture || fixtureB == fixture)
-			return body.getLinearVelocity().y < 0;
-		return false;
-	}
-
-	@Override
-	public void beginContact(Contact contact) {
-	}
-
-	@Override
-	public void preSolve(Contact contact, Manifold oldManifold) {
-	}
-
-	@Override
-	public void postSolve(Contact contact, ContactImpulse impulse) {
-	}
-
-	@Override
-	public void endContact(Contact contact) {
-	}
-
-	public void onClick(){
-		//body.applyLinearImpulse(0, jumpPower, body.getWorldCenter().x, body.getWorldCenter().y, true);
+	public void jump(){
+		body.applyLinearImpulse(0, jumpPower, body.getWorldCenter().x, body.getWorldCenter().y, true);
 	}
 	
 	
@@ -101,10 +78,10 @@ public class Nibolas implements ContactFilter, ContactListener {
 		
 		
 		if(target.x > body.getPosition().x){
-			body.setLinearVelocity(5,0);
+			body.setLinearVelocity(movementForce,0);
 		}
 		else if (target.x < body.getPosition().x){
-			body.setLinearVelocity(-5,0);
+			body.setLinearVelocity(-movementForce,0);
 		}
 	}
 

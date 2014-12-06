@@ -10,13 +10,18 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.ChainShape;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -24,12 +29,15 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
 import com.codamasters.LNHelpers.InputHandler;
 import com.codamasters.gameobjects.Nibolas;
+import com.codamasters.gameobjects.RigidBlock;
+import com.codamasters.gameobjects.SecurityCam;
 
 public class PantallaActual implements Screen{
 	
 	private World world;
 	private Box2DDebugRenderer debugRenderer;
 	private SpriteBatch batch;
+	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
 
 	private final float TIMESTEP = 1 / 60f;
@@ -37,6 +45,7 @@ public class PantallaActual implements Screen{
 	
 	private Array<Body> tmpBodies = new Array<Body>();
 	private Nibolas myNibolas;
+	private SecurityCam securityCam;
 
 	@Override
 	public void render(float delta) {
@@ -45,7 +54,9 @@ public class PantallaActual implements Screen{
 		
 		world.step(TIMESTEP, VELOCITYITERATIONS, POSITIONITERATIONS);
 		
-		//camera.position.y = player.getBody().getPosition().y > camera.position.y ? player.getBody().getPosition().y : camera.position.y;
+		if(myNibolas.getBody().getPosition().x > 0)
+			camera.position.x = myNibolas.getBody().getPosition().x;
+			
 		camera.update();
 		
 		batch.setProjectionMatrix(camera.combined);
@@ -60,7 +71,14 @@ public class PantallaActual implements Screen{
 			}
 		batch.end();
 		
+		//shapeRenderer.setProjectionMatrix(camera.combined);
+		shapeRenderer.begin(ShapeType.Filled);
+		shapeRenderer.setColor(255 / 255.0f, 255 / 255.0f, 45 / 255.0f, 1);
+		shapeRenderer.circle(10, 10, 5, 11);
+		shapeRenderer.end();
+		
 		myNibolas.update();
+		securityCam.update();
 		
 		debugRenderer.render(world, camera.combined);
 		
@@ -83,17 +101,38 @@ public class PantallaActual implements Screen{
 		
 		world = new World(new Vector2(0, -9.81f), true);
 		debugRenderer = new Box2DDebugRenderer();
+		shapeRenderer = new ShapeRenderer();
 		batch = new SpriteBatch();
 		
 		camera = new OrthographicCamera(gameWidth/10, gameHeight/10);
-		myNibolas = new Nibolas(world, this, 0, 1, .5f);
-		world.setContactFilter(myNibolas);
-		world.setContactListener(myNibolas);
-		
 		
 		BodyDef bodyDef = new BodyDef();
 		FixtureDef fixtureDef = new FixtureDef();
 		
+		/*
+		//BALL
+		// body definition
+		bodyDef.type = BodyType.DynamicBody;
+		bodyDef.position.set(0, 2);
+
+		// ball shape
+		CircleShape ballShape = new CircleShape();
+		ballShape.setRadius(.5f);
+	
+		// fixture definition
+		fixtureDef.shape = ballShape;
+		fixtureDef.friction = .25f;
+		fixtureDef.restitution = 0.75f;
+		fixtureDef.density = 2.5f;
+		
+		world.createBody(bodyDef).createFixture(fixtureDef);
+		ballShape.dispose();*/
+		
+		//BLOCKS
+		new RigidBlock(world,-9,-3.75f,.25f,.5f);
+		
+		// SECURITY CAMS
+		securityCam = new SecurityCam(world, 1,-1f,1,3);
 		
 		// GROUND
 		// body definition
@@ -115,6 +154,8 @@ public class PantallaActual implements Screen{
 		ground.createFixture(fixtureDef);
 		
 		groundShape.dispose();
+		
+		myNibolas = new Nibolas(world, this, 0, -3.5f, .5f);
 		
 		Gdx.input.setInputProcessor(new InputHandler(this,gameWidth/10,gameHeight/10));
 		
