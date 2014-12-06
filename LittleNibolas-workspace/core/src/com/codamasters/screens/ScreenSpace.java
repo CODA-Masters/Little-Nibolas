@@ -22,8 +22,9 @@ public class ScreenSpace implements Screen{
         int midPointY = (int) (gameHeight / 2);
 
         world = new Worldspace(midPointY);
-        Gdx.input.setInputProcessor(new InputHandler(world, screenWidth / gameWidth, screenHeight / gameHeight));
         renderer = new SpaceRenderer(world, (int) gameHeight, midPointY);
+        Gdx.input.setInputProcessor(new InputHandler(world, screenWidth / gameWidth, screenHeight / gameHeight));
+        
     }
 
     @Override

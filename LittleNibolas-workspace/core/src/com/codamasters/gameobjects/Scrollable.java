@@ -8,13 +8,17 @@ public class Scrollable {
     protected Vector2 velocity;
     protected int width;
     protected int height;
-    protected boolean isScrolledLeft;
+    protected float increm;
+    
+
+	protected boolean isScrolledLeft;
 
     public Scrollable(float x, float y, int width, int height, float scrollSpeed) {
         position = new Vector2(x, y);
         velocity = new Vector2(scrollSpeed, 0);
         this.width = width;
         this.height = height;
+        this.increm=0;
         isScrolledLeft = false;
     }
 
@@ -61,5 +65,7 @@ public class Scrollable {
     public int getHeight() {
         return height;
     }
-
+    public float getIncrem() {
+		return increm;
+	}
 }

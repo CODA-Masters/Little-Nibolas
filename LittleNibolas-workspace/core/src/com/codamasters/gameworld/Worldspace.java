@@ -9,7 +9,8 @@ public class Worldspace {
 	private Nibolas myNibolas;
     private ScrollHandler scroller;
     private int score = 0;
-    private float runTime = 0;
+    @SuppressWarnings("unused")
+	private float runTime = 0;
     private int midPointY;
 
     private GameState currentState;
@@ -21,7 +22,7 @@ public class Worldspace {
     public Worldspace(int midPointY) {
         //currentState = GameState.MENU;
         this.midPointY = midPointY;
-        myNibolas = new Nibolas(33, midPointY - 5, 17, 12);
+        myNibolas = new Nibolas(33, midPointY - 5, 25, 28);
         // The grass should start 66 pixels below the midPointY
         scroller = new ScrollHandler(this, midPointY + 66);
     }
@@ -47,8 +48,8 @@ public class Worldspace {
         scroller.update(delta);
 
         if (scroller.collides(myNibolas) && myNibolas.isAlive()) {
-            scroller.stop();
-            myNibolas.die();
+            scroller.onRestart();
+            myNibolas.onRestart(midPointY - 5);;
             //AssetLoader.dead.play();
         }
 

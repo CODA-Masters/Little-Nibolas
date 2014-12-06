@@ -2,6 +2,7 @@ package com.codamasters.gameobjects;
 
 import java.util.Random;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Circle;
 
@@ -9,43 +10,50 @@ import com.badlogic.gdx.math.Circle;
 public class Meteorite extends Scrollable{
 
     private Random altura;
-    private Random alfa;
+   // private Random alfa;
+    private Random radius;
     private Circle meteor;
 
-    public static final int METEOR_MAX_WIDTH = 24;
-    public static final int METEOR_MIN_WIDTH = 24;
-    private float groundY;
 
     private boolean isScored = false;
 
-    public Meteorite(float x, float y, int width, int height, float scrollSpeed,float groundY) {
-        super(x, y, width, height, scrollSpeed);
-        r = new Random();
+    public Meteorite(float x, float y, float scrollSpeed) {
+        super(x, y, 0, 0, scrollSpeed);
+        meteor= new Circle();
+        //alfa = new Random();
+        altura = new Random();
+        radius=new Random();
         
-        this.groundY = groundY;
+        //increm = (float)((alfa.nextInt(4000)-2000)/1000);
+       /* if((int)increm==0)
+        	this.height = altura.nextInt(100);
+        else if((int)increm==-1)
+        	this.height = altura.nextInt(50)-50;
+        else if((int)increm==1)
+        	this.height = altura.nextInt(50)+50;
+        else
+        	this.height = altura.nextInt(100);
+        	*/
+        	this.height = altura.nextInt(100);
+        Gdx.app.log("height", this.height+"");
+        this.width = radius.nextInt(20);
+        Gdx.app.log("width", this.width+"");
+        
+        Gdx.app.log("increment", increm+"");
     }
 
     @Override
     public void update(float delta) {
         // Call the update method in the superclass (Scrollable)
         super.update(delta);
-
-        // The set() method allows you to set the top left corner's x, y
-        // coordinates,
-        // along with the width and height of the rectangle
-        barUp.set(position.x, position.y, width, height);
-        barDown.set(position.x, position.y + height + VERTICAL_GAP, width,
-                groundY - (position.y + height + VERTICAL_GAP));
-
+        meteor.set(position.x, height, width);
+        //meteor.set(position.x, height+increm, width);
+        //increm+=increm;
         // Our skull width is 24. The bar is only 22 pixels wide. So the skull
         // must be shifted by 1 pixel to the left (so that the skull is centered
         // with respect to its bar).
 
         // This shift is equivalent to: (SKULL_WIDTH - width) / 2
-        skullUp.set(position.x - (SKULL_WIDTH - width) / 2, position.y + height
-                - SKULL_HEIGHT, SKULL_WIDTH, SKULL_HEIGHT);
-        skullDown.set(position.x - (SKULL_WIDTH - width) / 2, barDown.y,
-                SKULL_WIDTH, SKULL_HEIGHT);
 
     }
 
@@ -54,7 +62,21 @@ public class Meteorite extends Scrollable{
         // Call the reset method in the superclass (Scrollable)
         super.reset(newX);
         // Change the height to a random number
-        height = r.nextInt(90) + 15;
+        height = altura.nextInt(100);
+        width = radius.nextInt(20);
+        //increm = (float)((alfa.nextInt(4000)-2000)/1000);
+        /* if((int)increm==0)
+    	this.height = altura.nextInt(100);
+    else if((int)increm==-1)
+    	this.height = altura.nextInt(50)-50;
+    else if((int)increm==1)
+    	this.height = altura.nextInt(50)+50;
+    else
+    	this.height = altura.nextInt(100);
+    	*/
+        Gdx.app.log("height_r", this.height+"");
+        Gdx.app.log("width_r", this.width+"");
+        Gdx.app.log("increment_r", increm+"");
         isScored = false;
     }
     public void onRestart(float x, float scrollSpeed){
