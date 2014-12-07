@@ -59,10 +59,18 @@ public class SecurityCam {
 			movAng=true;
 				
 		if(movAng){
-			body.setAngularVelocity(-2);
+			body.setAngularVelocity(-.7f);
 		}
 		else{
-			body.setAngularVelocity(2);
+			body.setAngularVelocity(.7f);
 		}
+	}
+	
+	public Body getBody() {
+		return body;
+	}
+
+	public Fixture getFixture() {
+		return fixture;
 	}
 }

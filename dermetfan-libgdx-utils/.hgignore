@@ -1,0 +1,20 @@
+syntax: glob
+
+# Java
+*.class
+
+# IDEA
+*.iws
+*.ipr
+*.iml
+out/
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# Gradle
+build/
+.gradle/

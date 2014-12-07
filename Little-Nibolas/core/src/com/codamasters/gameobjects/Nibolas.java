@@ -29,11 +29,17 @@ public class Nibolas{
 	private Vector3 target = new Vector3();
 	private float movementForce = 5, jumpPower = 10;
 	private PantallaActual pantalla;
+	private boolean isMoving;
+	private boolean isLookingRight;
+	private boolean trincado;
 
-	public Nibolas(World world, PantallaActual pantalla, float x, float y, float width) {
+	public Nibolas(World world, PantallaActual pantalla, float x, float y, float width, float height) {
 		WIDTH = width;
 		HEIGHT = width * 2;
 		this.pantalla = pantalla;
+		isMoving = false;
+		isLookingRight = true;
+		trincado = false;
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
@@ -41,7 +47,7 @@ public class Nibolas{
 		bodyDef.fixedRotation = true;
 
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(width / 2, HEIGHT / 2);
+		shape.setAsBox(width / 2, height/2);
 
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
@@ -53,8 +59,6 @@ public class Nibolas{
 		fixture = body.createFixture(fixtureDef);
 		
 		shape.dispose();
-		
-		
 	}
 
 	public void update() {
@@ -62,7 +66,13 @@ public class Nibolas{
 		
 		if(target.x >= body.getPosition().x-0.05 && target.x <= body.getPosition().x+0.05){
 			body.setLinearVelocity(0,body.getLinearVelocity().y);
+			isMoving = false;
 		}
+		
+		if(target.x >= body.getPosition().x)
+			isLookingRight = true;
+		else
+			isLookingRight = false;
 		
 	}
 
@@ -83,6 +93,8 @@ public class Nibolas{
 		else if (target.x < body.getPosition().x){
 			body.setLinearVelocity(-movementForce,0);
 		}
+		
+		isMoving = true;
 	}
 
 	public float getRestitution() {
@@ -99,6 +111,23 @@ public class Nibolas{
 
 	public Fixture getFixture() {
 		return fixture;
+	}
+	
+	public boolean isMoving(){
+		return isMoving;
+	}
+	
+	public boolean isLookingRight(){
+		return isLookingRight;
+	}
+	
+	public void stop(){
+		isMoving = false;
+		trincado = true;
+	}
+	
+	public boolean trincado(){
+		return trincado;
 	}
 
 }
