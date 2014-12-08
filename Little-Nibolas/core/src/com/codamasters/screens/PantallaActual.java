@@ -76,7 +76,10 @@ public class PantallaActual implements Screen{
 	private AnimatedSprite binStaticSprite;
 	private AnimatedSprite ballSprite;
 	
-	private TextureRegion bg;
+	private TextureRegion bg1;
+	private TextureRegion bg2;
+	private TextureRegion bg3;
+	private TextureRegion bg4;
 
 	private float timestep = 1 / 60f;
 	private final int VELOCITYITERATIONS = 8, POSITIONITERATIONS = 3;
@@ -96,6 +99,7 @@ public class PantallaActual implements Screen{
 	private PantallaActual pantalla;
 	private boolean movAng;
 	private int lastBin;
+	boolean stop;
 	
 	public PantallaActual(){
 		
@@ -112,6 +116,7 @@ public class PantallaActual implements Screen{
 		shapeRenderer = new ShapeRenderer();
 		batch = new SpriteBatch();
 		lastBin = -1;
+		stop = false;
 		
 		camera = new OrthographicCamera(gameWidth/10, gameHeight/10);
 		
@@ -133,7 +138,10 @@ public class PantallaActual implements Screen{
 		binAnimation = AssetsLoader.binAnimation;
 		staticBin = AssetsLoader.staticBin;
 		staticBall = AssetsLoader.staticBall;
-		bg = AssetsLoader.bg;
+		bg1 = AssetsLoader.bg1;
+		bg2 = AssetsLoader.bg2;
+		bg3 = AssetsLoader.bg3;
+		bg4 = AssetsLoader.bg4;
 		
 		animatedSprite = new AnimatedSprite(nibolasAnimation);
 		reversedSprite = new AnimatedSprite(nibolasAnimationReversed);
@@ -155,7 +163,6 @@ public class PantallaActual implements Screen{
 		FixtureDef fixtureDef = new FixtureDef();
 		
 		
-		//BLOCKS
 		new RigidBlock(world,-9,-3.75f,.25f,.5f);
 		
 		// GROUND
@@ -183,8 +190,6 @@ public class PantallaActual implements Screen{
 		
 		// DISEÑO DEL MAPA
 		
-		trap =  new BallsTrap(world, 0,8,6,1);
-		ballsTraps.add(trap);
 		
 		bin = new Bin(world, 4,-3f, 1, 2);
 		bins.add(bin);
@@ -203,6 +208,98 @@ public class PantallaActual implements Screen{
 		
 		bin = new Bin(world, 35,-3f, 1, 2);
 		bins.add(bin);
+		
+		guard = new Guard(world, 38,-3.25f,1f,0.5f);
+		guards.add(guard);
+		
+		guard = new Guard(world, 40,-3.25f,1f,0.5f);
+		guards.add(guard);
+		
+		securityCam = new SecurityCam(world, 45,0,1,4);
+		securityCams.add(securityCam);
+		
+		bin = new Bin(world, 46,-3f, 1, 2);
+		bins.add(bin);
+		
+		securityCam = new SecurityCam(world, 48,0,1,4);
+		securityCams.add(securityCam);
+		
+		bin = new Bin(world, 52,-3f, 1, 2);					
+		bins.add(bin);
+		
+		guard = new Guard(world, 56,-3.25f,1f,0.5f);
+		guards.add(guard);
+		
+		trap =  new BallsTrap(world, 60,8,6,1);
+		ballsTraps.add(trap);
+		
+		bin = new Bin(world, 65,-3f, 1, 2);
+		bins.add(bin);
+		
+		guard = new Guard(world, 68,-3.25f,1f,0.5f);
+		guards.add(guard);
+		
+		securityCam = new SecurityCam(world, 75,0,1,4);
+		securityCams.add(securityCam);
+		
+		bin = new Bin(world, 74,-3f, 1, 2);
+		bins.add(bin);
+		
+		securityCam = new SecurityCam(world, 77,0,1,4);
+		securityCams.add(securityCam);
+		
+		bin = new Bin(world, 78,-3f, 1, 2);
+		bins.add(bin);
+		
+		securityCam = new SecurityCam(world, 79,0,1,4);
+		securityCams.add(securityCam);
+		
+		trap =  new BallsTrap(world, 86,8,6,1);
+		ballsTraps.add(trap);
+		
+		bin = new Bin(world, 79,-3f, 1, 2);
+		bins.add(bin);
+		
+		guard = new Guard(world, 82,-3.25f,1f,0.5f);
+		guards.add(guard);
+		
+		guard = new Guard(world, 84,-3.25f,1f,0.5f);
+		guards.add(guard);
+		
+		securityCam = new SecurityCam(world, 99,0,1,4);
+		securityCams.add(securityCam);
+		
+		bin = new Bin(world, 100,-3f, 1, 2);
+		bins.add(bin);
+		
+		trap =  new BallsTrap(world, 120,8,6,1);
+		ballsTraps.add(trap);
+		
+		bin = new Bin(world, 125,-3f, 1, 2);
+		bins.add(bin);
+		
+		guard = new Guard(world, 128,-3.25f,1f,0.5f);
+		guards.add(guard);
+		
+		securityCam = new SecurityCam(world, 135,0,1,4);
+		securityCams.add(securityCam);
+		
+		bin = new Bin(world, 138,-3f, 1, 2);
+		bins.add(bin);
+		
+		securityCam = new SecurityCam(world, 141,0,1,4);
+		securityCams.add(securityCam);
+		
+		bin = new Bin(world, 142,-3f, 1, 2);
+		bins.add(bin);
+		
+		securityCam = new SecurityCam(world, 143,0,1,4);
+		securityCams.add(securityCam);
+		
+		trap =  new BallsTrap(world, 155,8,6,1);
+		ballsTraps.add(trap);
+		
+		
 	}
 	
 	private void drawNibolas(){
@@ -231,10 +328,10 @@ public class PantallaActual implements Screen{
 	
 	private void drawSecurityCam(){
 		for(SecurityCam securityCam : securityCams){
-			camaraSprite.setBounds(securityCam.getBody().getPosition().x-securityCam.WIDTH/2,
+			camaraSprite.setBounds(securityCam.getBody().getPosition().x-securityCam.WIDTH,
 					securityCam.getBody().getPosition().y-securityCam.HEIGHT, securityCam.WIDTH, securityCam.HEIGHT);
 			camaraSprite.setKeepSize(true);
-			camaraSprite.setOrigin(camaraSprite.getWidth(), camaraSprite.getHeight());
+			camaraSprite.setOrigin( camaraSprite.getWidth(), camaraSprite.getHeight());
 	
 			camaraSprite.setRotation((float)(securityCam.getBody().getAngle()*180/Math.PI));
 			
@@ -348,10 +445,15 @@ public class PantallaActual implements Screen{
 		batch.begin();
 		
 		// DIBUJAR FONDO
-		batch.draw(bg, -10.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
-		batch.draw(bg, 13.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
-		batch.draw(bg, 37.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
-		batch.draw(bg, 61.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
+		batch.draw(bg1, -10.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
+		batch.draw(bg2, 13.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
+		batch.draw(bg3, 37.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
+		batch.draw(bg1, 61.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
+		batch.draw(bg2, 85.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
+		batch.draw(bg3, 109.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
+		batch.draw(bg1, 133.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
+		batch.draw(bg4, 157.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
+		batch.draw(bg1, 181.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
 		
 		if(hide){
 			for(int i = 0; i < bins.size; i++){
@@ -399,6 +501,14 @@ public class PantallaActual implements Screen{
 			}
 		}
 		
+		if(stop) stop();
+		
+		// CONDICIÓN DE ACABAR NIVEL
+		Gdx.app.log("posicion x", myNibolas.getBody().getPosition().x+"");
+		if(myNibolas.getBody().getPosition().x > 175){
+			//((Game)Gdx.app.getApplicationListener()).setScreen(new GameOver1());
+		}
+		
 		//debugRenderer.render(world, camera.combined);
 		
 	}
@@ -426,12 +536,12 @@ public class PantallaActual implements Screen{
                 	for(SecurityCam securityCam : securityCams){
 		                if((securityCam.getFixture() == fixtureA && myNibolas.getFixture()==fixtureB ) || ( securityCam.getFixture() == fixtureB && myNibolas.getFixture()==fixtureA ) ){
 		                	Gdx.app.log("CHOCAN","");
-		                	stop();
+		                	stop = true;
 		                }
                 	}
                 	for(Guard guard : guards){
 		                if((guard.getFixture() == fixtureA && myNibolas.getFixture()==fixtureB ) || ( guard.getFixture() == fixtureB && myNibolas.getFixture()==fixtureA ) ){
-		                	stop();
+		                	stop = true;
 		                }
                 	}
 	                
@@ -446,7 +556,7 @@ public class PantallaActual implements Screen{
                 			Array<Ball> balls = trap.getBalls();
                 			for(Ball ball : balls){
 				                if((ball.getFixture() == fixtureA && myNibolas.getFixture()==fixtureB ) || ( ball.getFixture() == fixtureB && myNibolas.getFixture()==fixtureA ) ){
-				                	stop();
+				                	stop =  true;
 				                }
                 			}
                 		}
