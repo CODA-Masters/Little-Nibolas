@@ -3,7 +3,7 @@ Little-Nibolas
 
 Juego para la Granada GameJam del equipo CODA Masters
 
-**Instrucciones de compilación del código**
+# Instrucciones de compilación del código
 
 Prerrequisitos:
 Tener java instalado, la variable de entorno JAVA_HOME bien situada y el IDE Eclipse
@@ -21,3 +21,5 @@ En configuración avanzada activar Eclipse:
 4. Pulsamos en generate y se nos creará el proyecto en la carpeta seleccionada
 5. Descargamos el proyecto de nuestro repositorio (usando git clone)
 6. Sustituir las carpetas dentro de core, introducir las carpetas android/assets/data, y desktop/data de nuestro proyecto en el proyecto que hemos creado
+7. Tener en cuenta que hace falta importar las librerias de TweenEngine (están en nuestro proyecto metidas en core/libs)
+8. Hay que tener en cuenta que para compilar debemos alterar el orden haciendo que TweenEngine quede por encima de LibGdx
