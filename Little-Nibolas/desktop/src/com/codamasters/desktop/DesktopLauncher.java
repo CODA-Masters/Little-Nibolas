@@ -9,8 +9,8 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.vSyncEnabled = true;
-		cfg.width = 408;
-		cfg.height = 272;
+		cfg.width = 1280;
+		cfg.height = 720;
 		
 		new LwjglApplication(new LittleNibolas(), cfg);
 	}

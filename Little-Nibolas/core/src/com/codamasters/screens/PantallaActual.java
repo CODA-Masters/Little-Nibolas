@@ -39,6 +39,8 @@ import com.badlogic.gdx.utils.Array;
 import com.codamasters.LNHelpers.AnimatedSprite;
 import com.codamasters.LNHelpers.AssetsLoader;
 import com.codamasters.LNHelpers.InputHandler;
+import com.codamasters.gameobjects.Ball;
+import com.codamasters.gameobjects.BallsTrap;
 import com.codamasters.gameobjects.Bin;
 import com.codamasters.gameobjects.Guard;
 import com.codamasters.gameobjects.Nibolas;
@@ -60,6 +62,9 @@ public class PantallaActual implements Screen{
 	private static Animation staticCamara;
 	private static Animation guardiaAnimation;
 	private static Animation guardiaAnimationCpy;
+	private static Animation binAnimation;
+	private static Animation staticBin;
+	private static Animation staticBall;
 	
 	private AnimatedSprite animatedSprite;
 	private AnimatedSprite staticSprite;
@@ -67,25 +72,54 @@ public class PantallaActual implements Screen{
 	private AnimatedSprite camaraSprite;
 	private AnimatedSprite guardiaSprite;
 	private AnimatedSprite guardiaReversedSprite;
+	private AnimatedSprite binSprite;
+	private AnimatedSprite binStaticSprite;
+	private AnimatedSprite ballSprite;
+	
+	private TextureRegion bg;
 
 	private float timestep = 1 / 60f;
 	private final int VELOCITYITERATIONS = 8, POSITIONITERATIONS = 3;
 	
 	private Array<Body> tmpBodies = new Array<Body>();
+	private Array<Bin> bins= new Array();
+	private Array<Guard> guards= new Array();
+	private Array<SecurityCam> securityCams= new Array();
+	private Array<BallsTrap> ballsTraps = new Array();
 	private Nibolas myNibolas;
 	private SecurityCam securityCam;
 	private Guard guard;
 	private Bin bin;
+	private BallsTrap trap;
 	private boolean hide;
+	private boolean insideBin;
 	private PantallaActual pantalla;
 	private boolean movAng;
+	private int lastBin;
 	
 	public PantallaActual(){
 		
+		float screenWidth = Gdx.graphics.getWidth();
+		float screenHeight = Gdx.graphics.getHeight();
+		float gameWidth = 203;
+		float gameHeight = screenHeight / (screenWidth / gameWidth);
+		runTime = 0;
+		hide = false;
+		insideBin = false;
+		pantalla = this;
+		world = new World(new Vector2(0, -9.81f), true);
+		debugRenderer = new Box2DDebugRenderer();
+		shapeRenderer = new ShapeRenderer();
+		batch = new SpriteBatch();
+		lastBin = -1;
+		
+		camera = new OrthographicCamera(gameWidth/10, gameHeight/10);
+		
 		initObjects();
 		initAssets();
-		pantalla = this;
-		movAng=true;
+		
+		Gdx.input.setInputProcessor(new InputHandler(this,gameWidth/10,gameHeight/10));
+		createCollisionListener();
 	}
 	
 	private void initAssets(){
@@ -96,6 +130,10 @@ public class PantallaActual implements Screen{
 		staticCamara = AssetsLoader.staticCamara;
 		guardiaAnimation = AssetsLoader.guardiaAnimation;
 		guardiaAnimationCpy = AssetsLoader.guardiaAnimationCpy;
+		binAnimation = AssetsLoader.binAnimation;
+		staticBin = AssetsLoader.staticBin;
+		staticBall = AssetsLoader.staticBall;
+		bg = AssetsLoader.bg;
 		
 		animatedSprite = new AnimatedSprite(nibolasAnimation);
 		reversedSprite = new AnimatedSprite(nibolasAnimationReversed);
@@ -105,44 +143,17 @@ public class PantallaActual implements Screen{
 		guardiaSprite = new AnimatedSprite(guardiaAnimation);
 		guardiaReversedSprite = new AnimatedSprite(guardiaAnimationCpy);
 		guardiaReversedSprite.flipFrames(true, false);
+		binSprite = new AnimatedSprite(binAnimation);
+		binStaticSprite = new AnimatedSprite(staticBin);
+		ballSprite = new AnimatedSprite(staticBall);
 	}
 	
 	public void initObjects(){
-		float screenWidth = Gdx.graphics.getWidth();
-		float screenHeight = Gdx.graphics.getHeight();
-		float gameWidth = 203;
-		float gameHeight = screenHeight / (screenWidth / gameWidth);
-		runTime = 0;
-		hide = false;
-		
-		world = new World(new Vector2(0, -9.81f), true);
-		debugRenderer = new Box2DDebugRenderer();
-		shapeRenderer = new ShapeRenderer();
-		batch = new SpriteBatch();
-		
-		camera = new OrthographicCamera(gameWidth/10, gameHeight/10);
+		// Definir objetos del mapa
 		
 		BodyDef bodyDef = new BodyDef();
 		FixtureDef fixtureDef = new FixtureDef();
 		
-		/*
-		//BALL
-		// body definition
-		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.set(0, 2);
-
-		// ball shape
-		CircleShape ballShape = new CircleShape();
-		ballShape.setRadius(.5f);
-	
-		// fixture definition
-		fixtureDef.shape = ballShape;
-		fixtureDef.friction = .25f;
-		fixtureDef.restitution = 0.75f;
-		fixtureDef.density = 2.5f;
-		
-		world.createBody(bodyDef).createFixture(fixtureDef);
-		ballShape.dispose();*/
 		
 		//BLOCKS
 		new RigidBlock(world,-9,-3.75f,.25f,.5f);
@@ -155,7 +166,7 @@ public class PantallaActual implements Screen{
 		// ground shape
 		ChainShape groundShape = new ChainShape();
 		
-		groundShape.createChain(new Vector2[] {new Vector2(-50, -2), new Vector2(50,-2)});
+		groundShape.createChain(new Vector2[] {new Vector2(-500, -2), new Vector2(500,-2)});
 
 		// fixture definition
 		fixtureDef.shape = groundShape;
@@ -168,62 +179,114 @@ public class PantallaActual implements Screen{
 		
 		groundShape.dispose();
 		
-		myNibolas = new Nibolas(world, this, -2, -3f, 1f,2f);
-		guard = new Guard(world, 8,-3.25f,1f,0.5f);
-		securityCam = new SecurityCam(world, 12,0,1,4);
-		bin = new Bin(world, 4,-3f, 1, 2);
+		myNibolas = new Nibolas(world, this, -2, -3f, .8f,2f);
 		
-		Gdx.input.setInputProcessor(new InputHandler(this,gameWidth/10,gameHeight/10));
-		createCollisionListener();
+		// DISEÑO DEL MAPA
+		
+		trap =  new BallsTrap(world, 0,8,6,1);
+		ballsTraps.add(trap);
+		
+		bin = new Bin(world, 4,-3f, 1, 2);
+		bins.add(bin);
+		
+		guard = new Guard(world, 8,-3.25f,1f,0.5f);
+		guards.add(guard);
+		
+		bin = new Bin(world, 14,-3f, 1, 2);
+		bins.add(bin);
+		
+		securityCam = new SecurityCam(world, 15,0,1,4);
+		securityCams.add(securityCam);
+		
+		trap =  new BallsTrap(world, 28,8,6,1);
+		ballsTraps.add(trap);
+		
+		bin = new Bin(world, 35,-3f, 1, 2);
+		bins.add(bin);
 	}
 	
 	private void drawNibolas(){
 		if(myNibolas.isMoving() && !myNibolas.trincado()){
 			if(myNibolas.isLookingRight()){		
-				animatedSprite.setBounds(myNibolas.getBody().getPosition().x-myNibolas.WIDTH/2,
-						myNibolas.getBody().getPosition().y-myNibolas.HEIGHT/2, myNibolas.WIDTH, myNibolas.HEIGHT);
+				animatedSprite.setBounds(myNibolas.getBody().getPosition().x-myNibolas.WIDTH/1.4f,
+						myNibolas.getBody().getPosition().y-myNibolas.HEIGHT/2, myNibolas.WIDTH*1.4f, myNibolas.HEIGHT);
 				animatedSprite.setKeepSize(true);
 				animatedSprite.draw(batch);
 			}
 			else{
-				reversedSprite.setBounds(myNibolas.getBody().getPosition().x-myNibolas.WIDTH/2,
-						myNibolas.getBody().getPosition().y-myNibolas.HEIGHT/2, myNibolas.WIDTH, myNibolas.HEIGHT);
+				reversedSprite.setBounds(myNibolas.getBody().getPosition().x-myNibolas.WIDTH/1.4f,
+						myNibolas.getBody().getPosition().y-myNibolas.HEIGHT/2, myNibolas.WIDTH*1.4f, myNibolas.HEIGHT);
 				reversedSprite.setKeepSize(true);
 				reversedSprite.draw(batch);
 			}
 		}
 		else{
 			
-			staticSprite.setBounds(myNibolas.getBody().getPosition().x-myNibolas.WIDTH/2,
-					myNibolas.getBody().getPosition().y-myNibolas.HEIGHT/2, myNibolas.WIDTH, myNibolas.HEIGHT);
+			staticSprite.setBounds(myNibolas.getBody().getPosition().x-myNibolas.WIDTH/1.4f,
+					myNibolas.getBody().getPosition().y-myNibolas.HEIGHT/2, myNibolas.WIDTH*1.4f, myNibolas.HEIGHT);
 			staticSprite.setKeepSize(true);
 			staticSprite.draw(batch);
 		}
 	}
 	
 	private void drawSecurityCam(){
-		camaraSprite.setBounds(securityCam.getBody().getPosition().x-securityCam.WIDTH/2,
-				securityCam.getBody().getPosition().y-securityCam.HEIGHT, securityCam.WIDTH, securityCam.HEIGHT);
-		camaraSprite.setKeepSize(true);
-		camaraSprite.setOrigin(camaraSprite.getWidth(), camaraSprite.getHeight());
-
-		camaraSprite.setRotation((float)(securityCam.getBody().getAngle()*180/Math.PI));
-		
-		camaraSprite.draw(batch);
+		for(SecurityCam securityCam : securityCams){
+			camaraSprite.setBounds(securityCam.getBody().getPosition().x-securityCam.WIDTH/2,
+					securityCam.getBody().getPosition().y-securityCam.HEIGHT, securityCam.WIDTH, securityCam.HEIGHT);
+			camaraSprite.setKeepSize(true);
+			camaraSprite.setOrigin(camaraSprite.getWidth(), camaraSprite.getHeight());
+	
+			camaraSprite.setRotation((float)(securityCam.getBody().getAngle()*180/Math.PI));
+			
+			camaraSprite.draw(batch);
+		}
 	}
 	
 	private void drawGuard(){
-		if (guard.isLookingRight()){
-			guardiaSprite.setBounds(guard.getBody().getPosition().x-guard.WIDTH*2+0.1f,
-					guard.getBody().getPosition().y-guard.HEIGHT*1.5f, guard.WIDTH*2.5f, guard.HEIGHT*4);
-			guardiaSprite.setKeepSize(true);
-			guardiaSprite.draw(batch);
+		for(Guard guard : guards){
+			if (guard.isLookingRight()){
+				guardiaSprite.setBounds(guard.getBody().getPosition().x-guard.WIDTH*2+0.1f,
+						guard.getBody().getPosition().y-guard.HEIGHT*1.5f, guard.WIDTH*2.5f, guard.HEIGHT*4);
+				guardiaSprite.setKeepSize(true);
+				guardiaSprite.draw(batch);
+			}
+			else{
+				guardiaReversedSprite.setBounds(guard.getBody().getPosition().x-guard.WIDTH/2-0.1f,
+						guard.getBody().getPosition().y-guard.HEIGHT*1.5f, guard.WIDTH*2.5f, guard.HEIGHT*4);
+				guardiaReversedSprite.setKeepSize(true);
+				guardiaReversedSprite.draw(batch);
+			}
 		}
-		else{
-			guardiaReversedSprite.setBounds(guard.getBody().getPosition().x-guard.WIDTH/2-0.1f,
-					guard.getBody().getPosition().y-guard.HEIGHT*1.5f, guard.WIDTH*2.5f, guard.HEIGHT*4);
-			guardiaReversedSprite.setKeepSize(true);
-			guardiaReversedSprite.draw(batch);
+	}
+	
+	private void drawBin(){
+		for(Bin bin : bins){
+			if(!bin.isNibolasInside()){
+				binStaticSprite.setBounds(bin.getBody().getPosition().x-bin.WIDTH/2,
+						bin.getBody().getPosition().y-bin.HEIGHT/2, bin.WIDTH, bin.HEIGHT);
+				binStaticSprite.setKeepSize(true);
+				binStaticSprite.draw(batch);
+			}
+			else{
+				binSprite.setBounds(bin.getBody().getPosition().x-bin.WIDTH/2,
+						bin.getBody().getPosition().y-bin.HEIGHT/2, bin.WIDTH, bin.HEIGHT);
+				binSprite.setKeepSize(true);
+				binSprite.draw(batch);
+			}
+		}
+	}
+	
+	private void drawBall(){
+		for(BallsTrap trap : ballsTraps){
+			if(trap.isActivated()){
+				Array<Ball> balls = trap.getBalls();
+				for(Ball ball : balls){
+					ballSprite.setBounds(ball.getBody().getPosition().x-ball.RADIUS,
+							ball.getBody().getPosition().y-ball.RADIUS, ball.RADIUS*2, ball.RADIUS*2);
+					ballSprite.setKeepSize(true);
+					ballSprite.draw(batch);
+				}
+			}
 		}
 	}
 	
@@ -234,7 +297,9 @@ public class PantallaActual implements Screen{
 		cam.unproject(target.set(screenX,screenY,0));
 		pantalla.setCamera(cam);
 		
-		bin = new Bin(world, 4,-3f, 1, 2);
+		bin = new Bin(world, myNibolas.getBody().getPosition().x,myNibolas.getBody().getPosition().y, 1, 2);
+		bin.setNibolasInside(false);
+		bins.set(lastBin, bin);
 		float x = bin.getBody().getPosition().x;
 		float y = bin.getBody().getPosition().y;
 		
@@ -260,7 +325,7 @@ public class PantallaActual implements Screen{
 	@Override
 	public void render(float delta) {
 		runTime += delta;
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(90 / 255f, 89 / 255f, 94 / 255f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		world.step(timestep, VELOCITYITERATIONS, POSITIONITERATIONS);
@@ -269,37 +334,72 @@ public class PantallaActual implements Screen{
 			
 		camera.update();
 		
+		float screenWidth = Gdx.graphics.getWidth();
+		float screenHeight = Gdx.graphics.getHeight();
+		float gameWidth = 203;
+		float gameHeight = screenHeight / (screenWidth / gameWidth);
+		
+		for(BallsTrap trap : ballsTraps){
+			if(myNibolas.getBody().getPosition().x > trap.getBody().getPosition().x-6)
+				trap.activate();
+			}
+		
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+		
+		// DIBUJAR FONDO
+		batch.draw(bg, -10.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
+		batch.draw(bg, 13.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
+		batch.draw(bg, 37.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
+		batch.draw(bg, 61.5f, -5.7f, camera.viewportWidth+4f, camera.viewportHeight+4f);
+		
 		if(hide){
-			float x = bin.getBody().getPosition().x;
-			float y = bin.getBody().getPosition().y;
-			bin.destroy();
-			myNibolas.destroy();
-			myNibolas = new Nibolas(world, this, x, y, 1f,2f);
-			myNibolas.becomeInvisible();
-			float screenWidth = Gdx.graphics.getWidth();
-			float screenHeight = Gdx.graphics.getHeight();
-			float gameWidth = 203;
-			float gameHeight = screenHeight / (screenWidth / gameWidth);
-			Gdx.input.setInputProcessor(new InputHandler(this,gameWidth/10,gameHeight/10));
-			hide = false;
+			for(int i = 0; i < bins.size; i++){
+				if(myNibolas.getBody().getPosition().x - 2 < bins.get(i).getBody().getPosition().x  &&
+						myNibolas.getBody().getPosition().x + 2 > bins.get(i).getBody().getPosition().x){
+					float x = bins.get(i).getBody().getPosition().x;
+					float y = bins.get(i).getBody().getPosition().y;
+					bins.get(i).destroy();
+					lastBin = i;
+					myNibolas.destroy();
+					myNibolas = new Nibolas(world, this, x, y, 1f,2f);
+					myNibolas.becomeInvisible();
+					
+					Gdx.input.setInputProcessor(new InputHandler(this,gameWidth/10,gameHeight/10));
+					hide = false;
+					bins.get(i).setNibolasInside(true);
+					break;
+				}
+			}
 		}
 		drawNibolas();
 		drawSecurityCam();
+		drawBin();
 		drawGuard();
+		drawBall();
+		
 		batch.end();
 		
-		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.setColor(255 / 255.0f, 255 / 255.0f, 45 / 255.0f, 1);
-		shapeRenderer.circle(10, 10, 5, 11);
-		shapeRenderer.end();
-		
 		myNibolas.update();
-		securityCam.update();
-		guard.update(8,2);
+		for(SecurityCam securityCam : securityCams)
+			securityCam.update();
+		for(Guard guard : guards){
+			guard.update();
+		}
 		
-		debugRenderer.render(world, camera.combined);
+		for(BallsTrap trap : ballsTraps){
+			if(trap.isActivated()){
+				Array<Ball> balls = trap.getBalls();
+				for(Ball ball : balls){
+					if(ball.getBody().getPosition().x < camera.position.x-camera.viewportWidth/2){
+						ball.destroy();
+						ball = new Ball(world, 0,-100);
+					}
+				}
+			}
+		}
+		
+		//debugRenderer.render(world, camera.combined);
 		
 	}
 	
@@ -323,20 +423,34 @@ public class PantallaActual implements Screen{
                 Fixture fixtureB = contact.getFixtureB();
 
                 if(!hide){
-	                if((securityCam.getFixture() == fixtureA && myNibolas.getFixture()==fixtureB ) || ( securityCam.getFixture() == fixtureB && myNibolas.getFixture()==fixtureA ) ){
-	                	Gdx.app.log("CHOCAN","");
-	                	timestep = 0;
-	                	myNibolas.stop();
-	                }
-	                if((guard.getFixture() == fixtureA && myNibolas.getFixture()==fixtureB ) || ( guard.getFixture() == fixtureB && myNibolas.getFixture()==fixtureA ) ){
-	                	timestep = 0;
-	                	myNibolas.stop();
-	                }
+                	for(SecurityCam securityCam : securityCams){
+		                if((securityCam.getFixture() == fixtureA && myNibolas.getFixture()==fixtureB ) || ( securityCam.getFixture() == fixtureB && myNibolas.getFixture()==fixtureA ) ){
+		                	Gdx.app.log("CHOCAN","");
+		                	stop();
+		                }
+                	}
+                	for(Guard guard : guards){
+		                if((guard.getFixture() == fixtureA && myNibolas.getFixture()==fixtureB ) || ( guard.getFixture() == fixtureB && myNibolas.getFixture()==fixtureA ) ){
+		                	stop();
+		                }
+                	}
 	                
-	               
-	                if((bin.getFixture() == fixtureA && myNibolas.getFixture()==fixtureB ) || ( bin.getFixture() == fixtureB && myNibolas.getFixture()==fixtureA ) ){
-	                	hide = true;
-	                }
+                	for(Bin bin : bins){
+		                if((bin.getFixture() == fixtureA && myNibolas.getFixture()==fixtureB ) || ( bin.getFixture() == fixtureB && myNibolas.getFixture()==fixtureA ) ){
+		                	hide = true;
+		                }
+                	}
+                	
+                	for(BallsTrap trap : ballsTraps){
+                		if(trap.isActivated()){
+                			Array<Ball> balls = trap.getBalls();
+                			for(Ball ball : balls){
+				                if((ball.getFixture() == fixtureA && myNibolas.getFixture()==fixtureB ) || ( ball.getFixture() == fixtureB && myNibolas.getFixture()==fixtureA ) ){
+				                	stop();
+				                }
+                			}
+                		}
+                	}
                 }
                 
             }
@@ -375,6 +489,12 @@ public class PantallaActual implements Screen{
 	public void dispose() {
 		world.dispose();
 		debugRenderer.dispose();
+	}
+	
+	public void stop(){
+		timestep = 0;
+		myNibolas.stop();
+		guardiaSprite.pause(); // esto no funciona
 	}
 	
 	public Nibolas getNibolas(){

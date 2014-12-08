@@ -13,15 +13,17 @@ public class Guard {
 	private Body body;
 	private Fixture fixture;
 	public final float WIDTH, HEIGHT;
-	private Vector2 velocity = new Vector2();
 	float runTime;
 	boolean lookingRight;
+	float origX, destX;
 	
 	public Guard(World world, float x, float y, float width, float height) {
 		WIDTH = width;
 		HEIGHT = height;
 		runTime =0;
 		lookingRight = false;
+		origX = x;
+		destX = x-6;
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.KinematicBody;
@@ -46,7 +48,7 @@ public class Guard {
 		
 	}
 	
-	public void update(float origX, float destX){
+	public void update(){
 		
 		if(body.getPosition().x > origX && body.getPosition().x < origX+0.05){
 			body.setLinearVelocity(new Vector2(-body.getLinearVelocity().x,0));
