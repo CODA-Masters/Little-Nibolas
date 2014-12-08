@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -38,6 +39,8 @@ import com.badlogic.gdx.utils.Array;
 import com.codamasters.LNHelpers.AnimatedSprite;
 import com.codamasters.LNHelpers.AssetsLoader;
 import com.codamasters.LNHelpers.InputHandler;
+import com.codamasters.gameobjects.Bin;
+import com.codamasters.gameobjects.Guard;
 import com.codamasters.gameobjects.Nibolas;
 import com.codamasters.gameobjects.RigidBlock;
 import com.codamasters.gameobjects.SecurityCam;
@@ -54,10 +57,16 @@ public class PantallaActual implements Screen{
 	private static Animation nibolasAnimation;
 	private static Animation nibolasAnimationReversed;
 	private static Animation staticNibolas;
+	private static Animation staticCamara;
+	private static Animation guardiaAnimation;
+	private static Animation guardiaAnimationCpy;
 	
 	private AnimatedSprite animatedSprite;
 	private AnimatedSprite staticSprite;
 	private AnimatedSprite reversedSprite;
+	private AnimatedSprite camaraSprite;
+	private AnimatedSprite guardiaSprite;
+	private AnimatedSprite guardiaReversedSprite;
 
 	private float timestep = 1 / 60f;
 	private final int VELOCITYITERATIONS = 8, POSITIONITERATIONS = 3;
@@ -65,11 +74,18 @@ public class PantallaActual implements Screen{
 	private Array<Body> tmpBodies = new Array<Body>();
 	private Nibolas myNibolas;
 	private SecurityCam securityCam;
+	private Guard guard;
+	private Bin bin;
+	private boolean hide;
+	private PantallaActual pantalla;
+	private boolean movAng;
 	
 	public PantallaActual(){
 		
 		initObjects();
 		initAssets();
+		pantalla = this;
+		movAng=true;
 	}
 	
 	private void initAssets(){
@@ -77,11 +93,18 @@ public class PantallaActual implements Screen{
 		nibolasAnimation = AssetsLoader.nibolasAnimation;
 		nibolasAnimationReversed = AssetsLoader.nibolasAnimationCpy;
 		staticNibolas = AssetsLoader.staticNibolas;
+		staticCamara = AssetsLoader.staticCamara;
+		guardiaAnimation = AssetsLoader.guardiaAnimation;
+		guardiaAnimationCpy = AssetsLoader.guardiaAnimationCpy;
 		
 		animatedSprite = new AnimatedSprite(nibolasAnimation);
 		reversedSprite = new AnimatedSprite(nibolasAnimationReversed);
 		reversedSprite.flipFrames(true, false);
 		staticSprite = new AnimatedSprite(staticNibolas);
+		camaraSprite = new AnimatedSprite(staticCamara);
+		guardiaSprite = new AnimatedSprite(guardiaAnimation);
+		guardiaReversedSprite = new AnimatedSprite(guardiaAnimationCpy);
+		guardiaReversedSprite.flipFrames(true, false);
 	}
 	
 	public void initObjects(){
@@ -90,6 +113,7 @@ public class PantallaActual implements Screen{
 		float gameWidth = 203;
 		float gameHeight = screenHeight / (screenWidth / gameWidth);
 		runTime = 0;
+		hide = false;
 		
 		world = new World(new Vector2(0, -9.81f), true);
 		debugRenderer = new Box2DDebugRenderer();
@@ -123,9 +147,6 @@ public class PantallaActual implements Screen{
 		//BLOCKS
 		new RigidBlock(world,-9,-3.75f,.25f,.5f);
 		
-		// SECURITY CAMS
-		securityCam = new SecurityCam(world, 6,0,1,4);
-		
 		// GROUND
 		// body definition
 		bodyDef.type = BodyType.StaticBody;
@@ -147,7 +168,10 @@ public class PantallaActual implements Screen{
 		
 		groundShape.dispose();
 		
-		myNibolas = new Nibolas(world, this, 0, -3.5f, 1f,2f);
+		myNibolas = new Nibolas(world, this, -2, -3f, 1f,2f);
+		guard = new Guard(world, 8,-3.25f,1f,0.5f);
+		securityCam = new SecurityCam(world, 12,0,1,4);
+		bin = new Bin(world, 4,-3f, 1, 2);
 		
 		Gdx.input.setInputProcessor(new InputHandler(this,gameWidth/10,gameHeight/10));
 		createCollisionListener();
@@ -155,15 +179,13 @@ public class PantallaActual implements Screen{
 	
 	private void drawNibolas(){
 		if(myNibolas.isMoving() && !myNibolas.trincado()){
-			if(myNibolas.isLookingRight()){
-				Gdx.app.log("Derecha","");
+			if(myNibolas.isLookingRight()){		
 				animatedSprite.setBounds(myNibolas.getBody().getPosition().x-myNibolas.WIDTH/2,
 						myNibolas.getBody().getPosition().y-myNibolas.HEIGHT/2, myNibolas.WIDTH, myNibolas.HEIGHT);
 				animatedSprite.setKeepSize(true);
 				animatedSprite.draw(batch);
 			}
 			else{
-				Gdx.app.log("Izquierda","");
 				reversedSprite.setBounds(myNibolas.getBody().getPosition().x-myNibolas.WIDTH/2,
 						myNibolas.getBody().getPosition().y-myNibolas.HEIGHT/2, myNibolas.WIDTH, myNibolas.HEIGHT);
 				reversedSprite.setKeepSize(true);
@@ -178,6 +200,62 @@ public class PantallaActual implements Screen{
 			staticSprite.draw(batch);
 		}
 	}
+	
+	private void drawSecurityCam(){
+		camaraSprite.setBounds(securityCam.getBody().getPosition().x-securityCam.WIDTH/2,
+				securityCam.getBody().getPosition().y-securityCam.HEIGHT, securityCam.WIDTH, securityCam.HEIGHT);
+		camaraSprite.setKeepSize(true);
+		camaraSprite.setOrigin(camaraSprite.getWidth(), camaraSprite.getHeight());
+
+		camaraSprite.setRotation((float)(securityCam.getBody().getAngle()*180/Math.PI));
+		
+		camaraSprite.draw(batch);
+	}
+	
+	private void drawGuard(){
+		if (guard.isLookingRight()){
+			guardiaSprite.setBounds(guard.getBody().getPosition().x-guard.WIDTH*2+0.1f,
+					guard.getBody().getPosition().y-guard.HEIGHT*1.5f, guard.WIDTH*2.5f, guard.HEIGHT*4);
+			guardiaSprite.setKeepSize(true);
+			guardiaSprite.draw(batch);
+		}
+		else{
+			guardiaReversedSprite.setBounds(guard.getBody().getPosition().x-guard.WIDTH/2-0.1f,
+					guard.getBody().getPosition().y-guard.HEIGHT*1.5f, guard.WIDTH*2.5f, guard.HEIGHT*4);
+			guardiaReversedSprite.setKeepSize(true);
+			guardiaReversedSprite.draw(batch);
+		}
+	}
+	
+	public void salirDePapelera(float screenX, float screenY){
+		
+		Vector3 target = new Vector3();
+		OrthographicCamera cam = pantalla.getCamera();
+		cam.unproject(target.set(screenX,screenY,0));
+		pantalla.setCamera(cam);
+		
+		bin = new Bin(world, 4,-3f, 1, 2);
+		float x = bin.getBody().getPosition().x;
+		float y = bin.getBody().getPosition().y;
+		
+		// Moverse a la derecha
+		if(target.x > myNibolas.getBody().getPosition().x){
+			myNibolas.destroy();
+			myNibolas = new Nibolas(world, this, x+1.05f, y, 1f,2f);
+		}
+		// Moverse a la izquierda
+		else if (target.x < myNibolas.getBody().getPosition().x){
+			myNibolas.destroy();
+			myNibolas = new Nibolas(world, this, x-1.05f, y, 1f,2f);
+		}
+		
+		float screenWidth = Gdx.graphics.getWidth();
+		float screenHeight = Gdx.graphics.getHeight();
+		float gameWidth = 203;
+		float gameHeight = screenHeight / (screenWidth / gameWidth);
+		Gdx.input.setInputProcessor(new InputHandler(this,gameWidth/10,gameHeight/10));
+		hide = false;
+	}
 
 	@Override
 	public void render(float delta) {
@@ -186,7 +264,6 @@ public class PantallaActual implements Screen{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		world.step(timestep, VELOCITYITERATIONS, POSITIONITERATIONS);
-		
 		if(myNibolas.getBody().getPosition().x > 0)
 			camera.position.x = myNibolas.getBody().getPosition().x;
 			
@@ -194,18 +271,33 @@ public class PantallaActual implements Screen{
 		
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+		if(hide){
+			float x = bin.getBody().getPosition().x;
+			float y = bin.getBody().getPosition().y;
+			bin.destroy();
+			myNibolas.destroy();
+			myNibolas = new Nibolas(world, this, x, y, 1f,2f);
+			myNibolas.becomeInvisible();
+			float screenWidth = Gdx.graphics.getWidth();
+			float screenHeight = Gdx.graphics.getHeight();
+			float gameWidth = 203;
+			float gameHeight = screenHeight / (screenWidth / gameWidth);
+			Gdx.input.setInputProcessor(new InputHandler(this,gameWidth/10,gameHeight/10));
+			hide = false;
+		}
 		drawNibolas();
+		drawSecurityCam();
+		drawGuard();
 		batch.end();
 		
-		//shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(255 / 255.0f, 255 / 255.0f, 45 / 255.0f, 1);
 		shapeRenderer.circle(10, 10, 5, 11);
 		shapeRenderer.end();
 		
 		myNibolas.update();
-		
 		securityCam.update();
+		guard.update(8,2);
 		
 		debugRenderer.render(world, camera.combined);
 		
@@ -216,10 +308,12 @@ public class PantallaActual implements Screen{
          
             @Override
             public void preSolve(Contact contact, Manifold oldManifold) {
+            	
             }
 
             @Override
             public void postSolve(Contact contact, ContactImpulse impulse) {
+            	 
             }
 
 
@@ -228,18 +322,27 @@ public class PantallaActual implements Screen{
                 Fixture fixtureA = contact.getFixtureA();
                 Fixture fixtureB = contact.getFixtureB();
 
-                if((securityCam.getFixture() == fixtureA && myNibolas.getFixture()==fixtureB ) || ( securityCam.getFixture() == fixtureB && myNibolas.getFixture()==fixtureA ) ){
-                	Gdx.app.log("CHOCAN","");
-                	timestep = 0;
-                	myNibolas.stop();
-                	
+                if(!hide){
+	                if((securityCam.getFixture() == fixtureA && myNibolas.getFixture()==fixtureB ) || ( securityCam.getFixture() == fixtureB && myNibolas.getFixture()==fixtureA ) ){
+	                	Gdx.app.log("CHOCAN","");
+	                	timestep = 0;
+	                	myNibolas.stop();
+	                }
+	                if((guard.getFixture() == fixtureA && myNibolas.getFixture()==fixtureB ) || ( guard.getFixture() == fixtureB && myNibolas.getFixture()==fixtureA ) ){
+	                	timestep = 0;
+	                	myNibolas.stop();
+	                }
+	                
+	               
+	                if((bin.getFixture() == fixtureA && myNibolas.getFixture()==fixtureB ) || ( bin.getFixture() == fixtureB && myNibolas.getFixture()==fixtureA ) ){
+	                	hide = true;
+	                }
                 }
+                
             }
 
 			@Override
 			public void endContact(Contact contact) {
-				 Fixture fixtureA = contact.getFixtureA();
-	             Fixture fixtureB = contact.getFixtureB();
 			}
         });
 	}

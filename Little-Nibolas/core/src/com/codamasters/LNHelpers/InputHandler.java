@@ -25,7 +25,11 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-    	myNibolas.move(screenX, screenY);
+    	if(myNibolas.isVisible())
+    		myNibolas.move(screenX, screenY);
+    	else{
+    		pantalla.salirDePapelera(screenX,screenY);
+    	}
         return true;
         
     }

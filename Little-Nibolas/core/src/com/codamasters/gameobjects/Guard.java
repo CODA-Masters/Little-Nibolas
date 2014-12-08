@@ -14,13 +14,17 @@ public class Guard {
 	private Fixture fixture;
 	public final float WIDTH, HEIGHT;
 	private Vector2 velocity = new Vector2();
+	float runTime;
+	boolean lookingRight;
 	
 	public Guard(World world, float x, float y, float width, float height) {
 		WIDTH = width;
-		HEIGHT = width * 2;
+		HEIGHT = height;
+		runTime =0;
+		lookingRight = false;
 
 		BodyDef bodyDef = new BodyDef();
-		bodyDef.type = BodyType.DynamicBody;
+		bodyDef.type = BodyType.KinematicBody;
 		bodyDef.position.set(x, y);
 		bodyDef.fixedRotation = true;
 
@@ -37,5 +41,42 @@ public class Guard {
 		fixture = body.createFixture(fixtureDef);
 		
 		shape.dispose();
+		
+		body.setLinearVelocity(new Vector2(-2,0));
+		
+	}
+	
+	public void update(float origX, float destX){
+		
+		if(body.getPosition().x > origX && body.getPosition().x < origX+0.05){
+			body.setLinearVelocity(new Vector2(-body.getLinearVelocity().x,0));
+			lookingRight = false;
+		}
+		
+		else if(body.getPosition().x < destX && body.getPosition().x > destX-0.05){
+			body.setLinearVelocity(new Vector2(-body.getLinearVelocity().x,0));
+			lookingRight = true;
+		}
+			
+	}
+	
+	public float getRestitution() {
+		return fixture.getRestitution();
+	}
+
+	public void setRestitution(float restitution) {
+		fixture.setRestitution(restitution);
+	}
+
+	public Body getBody() {
+		return body;
+	}
+
+	public Fixture getFixture() {
+		return fixture;
+	}
+	
+	public boolean isLookingRight(){
+		return lookingRight;
 	}
 }

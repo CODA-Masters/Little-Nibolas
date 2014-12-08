@@ -32,14 +32,18 @@ public class Nibolas{
 	private boolean isMoving;
 	private boolean isLookingRight;
 	private boolean trincado;
+	private World world;
+	private boolean visible;
 
 	public Nibolas(World world, PantallaActual pantalla, float x, float y, float width, float height) {
 		WIDTH = width;
-		HEIGHT = width * 2;
+		HEIGHT = height;
 		this.pantalla = pantalla;
 		isMoving = false;
 		isLookingRight = true;
 		trincado = false;
+		this.world = world;
+		visible = true;
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
@@ -62,7 +66,7 @@ public class Nibolas{
 	}
 
 	public void update() {
-		body.applyForceToCenter(velocity, true);
+		//body.applyForceToCenter(velocity, true);
 		
 		if(target.x >= body.getPosition().x-0.05 && target.x <= body.getPosition().x+0.05){
 			body.setLinearVelocity(0,body.getLinearVelocity().y);
@@ -86,10 +90,11 @@ public class Nibolas{
 		cam.unproject(target.set(screenX,screenY,0));
 		pantalla.setCamera(cam);
 		
-		
+		// Moverse a la derecha
 		if(target.x > body.getPosition().x){
 			body.setLinearVelocity(movementForce,0);
 		}
+		// Moverse a la izquierda
 		else if (target.x < body.getPosition().x){
 			body.setLinearVelocity(-movementForce,0);
 		}
@@ -124,10 +129,30 @@ public class Nibolas{
 	public void stop(){
 		isMoving = false;
 		trincado = true;
+		body.setLinearVelocity(0,0);
 	}
 	
 	public boolean trincado(){
 		return trincado;
+	}
+	
+	public void becomeInvisible(){
+			visible = false;
+			body.setType(BodyType.StaticBody);
+	}
+	
+	public void becomeVisible(){
+			visible = true;
+			body.setType(BodyType.DynamicBody);
+	}
+	
+	public boolean isVisible(){
+		return visible;
+	}
+	
+	public void destroy(){
+		body.destroyFixture(fixture);
+		world.destroyBody(body);
 	}
 
 }
