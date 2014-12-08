@@ -98,4 +98,7 @@ public class Meteorite extends Scrollable{
     public void setScored(boolean b) {
         isScored = b;
     }
+    public void changeSpeed(int v){
+		velocity.x= v;
+	}
 }

@@ -103,8 +103,30 @@ public class SpaceRenderer {
         drawMeteor();
  
         // Convert integer into String
-        String score = myWorld.getScore() + "";
-
+        String score="";
+        if(scroller.getTime()>=20 && scroller.getTime()<=26){
+        	if(scroller.getTime()==20){
+        		score="MODO EXTREMO";
+        	}else if(scroller.getTime()==21){
+        		score="5";
+        	}else if(scroller.getTime()==22){
+        		score="4";
+        	}else if(scroller.getTime()==23){
+        		score="3";
+        	}else if(scroller.getTime()==24){
+        		score="2";
+        	}else if(scroller.getTime()==25){
+        		score="1";
+        	}else if(scroller.getTime()==26){
+        		score="PAHH";
+        	}
+        	AssetLoader.shadow.draw(batcher, "" + score , (209/ 2) - (5 * score.length()), midPointY);
+            // Draw text
+            AssetLoader.font.draw(batcher, "" + score, (209 / 2) - (5 * score.length() - 1),midPointY);
+        }
+        	
+        
+        score = myWorld.getScore() + "";
         // Draw shadow first
         AssetLoader.shadow.draw(batcher, "" + myWorld.getScore(), (209/ 2)
                 - (3 * score.length()), midPointY-50);

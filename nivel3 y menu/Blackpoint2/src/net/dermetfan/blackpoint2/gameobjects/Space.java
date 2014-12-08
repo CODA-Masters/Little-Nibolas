@@ -21,6 +21,9 @@ public class Space extends Scrollable{
 	public void update(float delta){
 		super.update(delta);
 	}
+	public void changeSpeed(int v){
+		velocity.x= v;
+	}
 
 
 }
