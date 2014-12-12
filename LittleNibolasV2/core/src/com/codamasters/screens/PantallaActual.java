@@ -521,7 +521,7 @@ public class PantallaActual implements Screen{
 			}
 		}
 		
-		debugRenderer.render(world, camera.combined);
+		//debugRenderer.render(world, camera.combined);
 
 
 		if(stop) stop();
