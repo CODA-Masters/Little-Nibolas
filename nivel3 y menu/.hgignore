@@ -1,6 +1,0 @@
-syntax: glob
-
-Blackpoint2/bin*
-Blackpoint2-android/bin*
-Blackpoint2-desktop/bin*
-Blackpoint2-html/war*

@@ -1,1 +1,0 @@
-A game developed for the tutorial series [Java Game Development (LibGDX)](http://youtube.com/playlist?list=PLXY8okVWvwZ0JOwHiH1TntAdq-UDPnC2L) by [dermetfan](http://youtube.com/dermetfan)

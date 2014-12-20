@@ -1,6 +1,0 @@
-apply from: 'gradle/common.gradle'
-
-dependencies {
-	compile "com.badlogicgames.gdx:gdx:$libgdxVersion"
-	testCompile 'junit:junit:+'
-}

@@ -1,2 +1,0 @@
-# Module net.dermetfan.blackpoint2.GwtDefinition
-# RPC service class, partial path of RPC policy file
