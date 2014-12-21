@@ -44,7 +44,7 @@ public class logo implements Screen {
 		//if(Gdx.app.getType() == ApplicationType.Desktop)
 		//	Gdx.graphics.setDisplayMode((int) (Gdx.graphics.getHeight() / 1.5f), Gdx.graphics.getHeight(), false);
 		// apply preferences
-		Gdx.graphics.setVSync(Settings.vSync());
+		//Gdx.graphics.setVSync(Settings.vSync());
 		
 		
 		batch = new SpriteBatch();

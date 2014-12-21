@@ -1,6 +1,7 @@
 package com.codamasters.LNHelpers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.codamasters.gameobjects.Nibolas;
 import com.codamasters.screens.PantallaActual;
@@ -41,12 +42,27 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        return false;
+    	switch(keycode){
+	    	case Keys.LEFT:
+	    		myNibolas.moveLeft();
+	    		break;
+	    	case Keys.RIGHT:
+	    		myNibolas.moveRight();
+	    		break;
+    	}
+    	if(!myNibolas.isVisible()){
+    		if(myNibolas.isLookingRight())
+    			pantalla.salirDePapelera(1000,0);
+    		else
+    			pantalla.salirDePapelera(-1000,0);
+    	}
+        return true;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-    	return false;
+    	myNibolas.stay();
+    	return true;
     }
 
     @Override

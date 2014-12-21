@@ -199,6 +199,7 @@ public class PantallaActual implements Screen{
 		float yCam = groundPos+2;
 		float yBallsTrap = groundPos+10;
 		
+		
 		bin = new Bin(world, 4, yBin, 1, 2);
 		bins.add(bin);
 		
@@ -418,7 +419,7 @@ public class PantallaActual implements Screen{
 		float screenHeight = Gdx.graphics.getHeight();
 		float gameWidth = 203;
 		float gameHeight = screenHeight / (screenWidth / gameWidth);
-		Gdx.input.setInputProcessor(new InputHandler(this,gameWidth/10,gameHeight/10));
+		Gdx.input.setInputProcessor(new InputHandler(this,gameWidth/15,gameHeight/15));
 		hide = false;
 	}
 
@@ -468,9 +469,15 @@ public class PantallaActual implements Screen{
 		inicio+=dist;
 		batch.draw(bg1, inicio, fondoY, camera.viewportWidth+4f, camera.viewportHeight);
 		inicio+=dist;
-		batch.draw(bg4, inicio, fondoY, camera.viewportWidth+4f, camera.viewportHeight);
+		batch.draw(bg2, inicio, fondoY, camera.viewportWidth+4f, camera.viewportHeight);
+		inicio+=dist;
+		batch.draw(bg3, inicio, fondoY, camera.viewportWidth+4f, camera.viewportHeight);
 		inicio+=dist;
 		batch.draw(bg1, inicio, fondoY, camera.viewportWidth+4f, camera.viewportHeight);
+		inicio+=dist;
+		batch.draw(bg4, inicio, fondoY, camera.viewportWidth+4f, camera.viewportHeight);
+		inicio+=dist;
+		batch.draw(bg2, inicio, fondoY, camera.viewportWidth+4f, camera.viewportHeight);
 		
 		
 		if(hide){
@@ -485,7 +492,7 @@ public class PantallaActual implements Screen{
 					myNibolas = new Nibolas(world, this, x, y, .6f,2f);
 					myNibolas.becomeInvisible();
 					
-					Gdx.input.setInputProcessor(new InputHandler(this,gameWidth/10,gameHeight/10));
+					Gdx.input.setInputProcessor(new InputHandler(this,gameWidth/15,gameHeight/15));
 					hide = false;
 					bins.get(i).setNibolasInside(true);
 					break;
@@ -511,7 +518,9 @@ public class PantallaActual implements Screen{
 			if(trap.isActivated()){
 				Array<Ball> balls = trap.getBalls();
 				for(Ball ball : balls){
-					if(ball.getBody().getPosition().x < camera.position.x-camera.viewportWidth/2){
+					if(ball.getBody().getPosition().x < camera.position.x-camera.viewportWidth/2 ||
+							(ball.getBody().getPosition().x > camera.position.x+camera.viewportWidth/2 &&
+									ball.getBody().getPosition().y < camera.position.y)){
 						ball.destroy();
 						ball = new Ball(world, 0,-100);
 					}
@@ -526,7 +535,7 @@ public class PantallaActual implements Screen{
 		
 		// CONDICIÓN DE ACABAR NIVEL
 		
-		if(myNibolas.getBody().getPosition().x > 175){
+		if(myNibolas.getBody().getPosition().x > 173 && !stop){
 			AssetsLoader.music_E1.stop();
 			((Game)Gdx.app.getApplicationListener()).setScreen(new FinPrimerNivel1());
 		}

@@ -102,7 +102,7 @@ public class MainMenu implements Screen {
 		width = Gdx.graphics.getWidth();
 	    height = Gdx.graphics.getHeight();
 		splash = new Sprite(new Texture("data/stopednibolas.png"));
-		splash.setSize(width/6, height/2);
+		splash.setSize(width/7, height/2);
 		splash.setPosition((width / 8) - (splash.getWidth() / 8), (height / 8)- (splash.getHeight() / 8));
 
 		// creating buttons

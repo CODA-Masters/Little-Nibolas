@@ -31,6 +31,7 @@ public class Nibolas{
 	private PantallaActual pantalla;
 	private boolean isMoving;
 	private boolean isLookingRight;
+	private boolean keyRight;
 	private boolean trincado;
 	private World world;
 	private boolean visible;
@@ -44,6 +45,7 @@ public class Nibolas{
 		trincado = false;
 		this.world = world;
 		visible = true;
+		target.set(-10,0,0);
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
@@ -73,11 +75,6 @@ public class Nibolas{
 			isMoving = false;
 		}
 		
-		if(target.x >= body.getPosition().x)
-			isLookingRight = true;
-		else
-			isLookingRight = false;
-		
 	}
 
 	public void jump(){
@@ -93,13 +90,32 @@ public class Nibolas{
 		// Moverse a la derecha
 		if(target.x > body.getPosition().x){
 			body.setLinearVelocity(movementForce,0);
+			isLookingRight = true;
 		}
 		// Moverse a la izquierda
 		else if (target.x < body.getPosition().x){
 			body.setLinearVelocity(-movementForce,0);
+			isLookingRight = false;
 		}
 		
 		isMoving = true;
+	}
+	
+	public void moveRight(){
+		isLookingRight = true;
+		body.setLinearVelocity(movementForce,0);
+		isMoving = true;
+	}
+	
+	public void moveLeft(){
+		isLookingRight = false;
+		body.setLinearVelocity(-movementForce,0);
+		isMoving = true;
+	}
+	
+	public void stay(){
+		body.setLinearVelocity(0,0);
+		isMoving = false;
 	}
 
 	public float getRestitution() {
