@@ -5,9 +5,17 @@ Juego para la Granada GameJam del equipo CODA Masters
 
 # Juego compilado listo para instalar
 
+## Versión actual ##
+
 * [Android] (https://github.com/julioxus/Little-Nibolas/raw/master/LittleNibolas.apk)
 
 * [PC] (https://github.com/julioxus/Little-Nibolas/raw/master/LittleNibolas.jar)
+
+## Versión 72h ##
+
+* [Android] (https://github.com/julioxus/Little-Nibolas/raw/master/LittleNibolas72h.apk)
+
+* [PC] (https://github.com/julioxus/Little-Nibolas/raw/master/LittleNibolas72h.jar)
 
 
 # Instrucciones de compilación del código
