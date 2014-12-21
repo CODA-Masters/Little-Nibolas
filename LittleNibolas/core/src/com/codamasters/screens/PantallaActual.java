@@ -60,6 +60,7 @@ public class PantallaActual implements Screen{
 	private static Animation nibolasAnimationReversed;
 	private static Animation staticNibolas;
 	private static Animation staticCamara;
+	private static Animation staticCamaraCpy;
 	private static Animation guardiaAnimation;
 	private static Animation guardiaAnimationCpy;
 	private static Animation binAnimation;
@@ -70,6 +71,7 @@ public class PantallaActual implements Screen{
 	private AnimatedSprite staticSprite;
 	private AnimatedSprite reversedSprite;
 	private AnimatedSprite camaraSprite;
+	private AnimatedSprite camaraReversedSprite;
 	private AnimatedSprite guardiaSprite;
 	private AnimatedSprite guardiaReversedSprite;
 	private AnimatedSprite binSprite;
@@ -138,6 +140,7 @@ public class PantallaActual implements Screen{
 		nibolasAnimationReversed = AssetsLoader.nibolasAnimationCpy;
 		staticNibolas = AssetsLoader.staticNibolas;
 		staticCamara = AssetsLoader.staticCamara;
+		staticCamaraCpy = AssetsLoader.staticCamaraCpy;
 		guardiaAnimation = AssetsLoader.guardiaAnimation;
 		guardiaAnimationCpy = AssetsLoader.guardiaAnimationCpy;
 		binAnimation = AssetsLoader.binAnimation;
@@ -153,6 +156,8 @@ public class PantallaActual implements Screen{
 		reversedSprite.flipFrames(true, false);
 		staticSprite = new AnimatedSprite(staticNibolas);
 		camaraSprite = new AnimatedSprite(staticCamara);
+		camaraReversedSprite = new AnimatedSprite(staticCamaraCpy);
+		camaraReversedSprite.flipFrames(true, false);
 		guardiaSprite = new AnimatedSprite(guardiaAnimation);
 		guardiaReversedSprite = new AnimatedSprite(guardiaAnimationCpy);
 		guardiaReversedSprite.flipFrames(true, false);
@@ -199,7 +204,6 @@ public class PantallaActual implements Screen{
 		float yCam = groundPos+2;
 		float yBallsTrap = groundPos+10;
 		
-		
 		bin = new Bin(world, 4, yBin, 1, 2);
 		bins.add(bin);
 		
@@ -209,7 +213,7 @@ public class PantallaActual implements Screen{
 		bin = new Bin(world, 14, yBin, 1, 2);
 		bins.add(bin);
 		
-		securityCam = new SecurityCam(world, 15, yCam,1,4);
+		securityCam = new SecurityCam(world, 14, yCam,0.5f,4);
 		securityCams.add(securityCam);
 		
 		trap =  new BallsTrap(world, 28, yBallsTrap,6,1);
@@ -224,13 +228,13 @@ public class PantallaActual implements Screen{
 		guard = new Guard(world, 40, yGuard,1f,0.5f);
 		guards.add(guard);
 		
-		securityCam = new SecurityCam(world, 45, yCam,1,4);
+		securityCam = new SecurityCam(world, 45, yCam,0.5f,4);
 		securityCams.add(securityCam);
 		
 		bin = new Bin(world, 46, yBin, 1, 2);
 		bins.add(bin);
 		
-		securityCam = new SecurityCam(world, 48, yCam,1,4);
+		securityCam = new SecurityCam(world, 48, yCam,0.5f,4);
 		securityCams.add(securityCam);
 		
 		bin = new Bin(world, 52, yBin, 1, 2);					
@@ -242,13 +246,13 @@ public class PantallaActual implements Screen{
 		trap =  new BallsTrap(world, 60, yBallsTrap,6,1);
 		ballsTraps.add(trap);
 		
-		bin = new Bin(world, 65, yBin, 1, 2);
+		bin = new Bin(world, 67, yBin, 1, 2);
 		bins.add(bin);
 		
 		guard = new Guard(world, 68, yGuard,1f,0.5f);
 		guards.add(guard);
 		
-		securityCam = new SecurityCam(world, 75, yCam,1,4);
+		securityCam = new SecurityCam(world, 75, yCam,0.5f,4);
 		securityCams.add(securityCam);
 		
 		bin = new Bin(world, 74, yBin, 1, 2);
@@ -258,11 +262,8 @@ public class PantallaActual implements Screen{
 		bin = new Bin(world, 79, yBin, 1, 2);
 		bins.add(bin);
 		
-		securityCam = new SecurityCam(world, 79, yCam,1,4);
+		securityCam = new SecurityCam(world, 79, yCam,0.5f,4);
 		securityCams.add(securityCam);
-		
-		trap =  new BallsTrap(world, 86, yBallsTrap,6,1);
-		ballsTraps.add(trap);
 		
 		
 		guard = new Guard(world, 82, yGuard,1f,0.5f);
@@ -271,7 +272,10 @@ public class PantallaActual implements Screen{
 		guard = new Guard(world, 84, yGuard,1f,0.5f);
 		guards.add(guard);
 		
-		securityCam = new SecurityCam(world, 99, yCam,1,4);
+		trap =  new BallsTrap(world, 90, yBallsTrap,6,1);
+		ballsTraps.add(trap);
+		
+		securityCam = new SecurityCam(world, 99, yCam,0.5f,4);
 		securityCams.add(securityCam);
 		
 		bin = new Bin(world, 100, yBin, 1, 2);
@@ -280,25 +284,25 @@ public class PantallaActual implements Screen{
 		trap =  new BallsTrap(world, 120, yBallsTrap,6,1);
 		ballsTraps.add(trap);
 		
-		bin = new Bin(world, 125, yBin, 1, 2);
+		bin = new Bin(world, 127, yBin, 1, 2);
 		bins.add(bin);
 		
 		guard = new Guard(world, 128, yGuard,1f,0.5f);
 		guards.add(guard);
 		
-		securityCam = new SecurityCam(world, 135, yCam,1,4);
+		securityCam = new SecurityCam(world, 133, yCam,0.5f,4);
 		securityCams.add(securityCam);
 		
 		bin = new Bin(world, 138, yBin, 1, 2);
 		bins.add(bin);
 		
-		securityCam = new SecurityCam(world, 141, yCam,1,4);
+		securityCam = new SecurityCam(world, 141, yCam,0.5f,4);
 		securityCams.add(securityCam);
 		
 		bin = new Bin(world, 142, yBin, 1, 2);
 		bins.add(bin);
 		
-		securityCam = new SecurityCam(world, 143, yCam,1,4);
+		securityCam = new SecurityCam(world, 143, yCam,0.5f,4);
 		securityCams.add(securityCam);
 		
 		trap =  new BallsTrap(world, 155, yBallsTrap,6,1);
@@ -321,7 +325,7 @@ public class PantallaActual implements Screen{
 				reversedSprite.draw(batch);
 			}
 		}
-		else{
+		else if(myNibolas.isVisible()){
 			
 			staticSprite.setBounds(myNibolas.getBody().getPosition().x-myNibolas.WIDTH/1.4f,
 					myNibolas.getBody().getPosition().y-myNibolas.HEIGHT/2, myNibolas.WIDTH*1.4f, myNibolas.HEIGHT);
@@ -332,14 +336,27 @@ public class PantallaActual implements Screen{
 	
 	private void drawSecurityCam(){
 		for(SecurityCam securityCam : securityCams){
-			camaraSprite.setBounds(securityCam.getBody().getPosition().x-securityCam.WIDTH,
-					securityCam.getBody().getPosition().y-securityCam.HEIGHT, securityCam.WIDTH, securityCam.HEIGHT);
-			camaraSprite.setKeepSize(true);
-			camaraSprite.setOrigin( camaraSprite.getWidth(), camaraSprite.getHeight());
-	
-			camaraSprite.setRotation((float)(securityCam.getBody().getAngle()*180/Math.PI));
-			
-			camaraSprite.draw(batch);
+			float angle = (float)(securityCam.getBody().getAngle()*180/Math.PI);
+			if(angle < 0){
+				camaraSprite.setBounds(securityCam.getBody().getPosition().x-securityCam.WIDTH+0.22f,
+						securityCam.getBody().getPosition().y-securityCam.HEIGHT, securityCam.WIDTH, securityCam.HEIGHT);
+				camaraSprite.setKeepSize(true);
+				camaraSprite.setOrigin( camaraSprite.getWidth()-0.22f, camaraSprite.getHeight());
+		
+				camaraSprite.setRotation(angle);
+				
+				camaraSprite.draw(batch);
+			}
+			else{
+				camaraReversedSprite.setBounds(securityCam.getBody().getPosition().x-securityCam.WIDTH+0.22f,
+						securityCam.getBody().getPosition().y-securityCam.HEIGHT, securityCam.WIDTH, securityCam.HEIGHT);
+				camaraReversedSprite.setKeepSize(true);
+				camaraReversedSprite.setOrigin( camaraReversedSprite.getWidth()-0.22f, camaraReversedSprite.getHeight());
+		
+				camaraReversedSprite.setRotation(angle);
+				
+				camaraReversedSprite.draw(batch);
+			}
 		}
 	}
 	

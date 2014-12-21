@@ -13,12 +13,12 @@ public class AssetsLoader {
 	
 	public static Texture tNibolas, tStaticNibolas, tCamara, tGuardia, tBin, ofibg1, ofibg2, ofibg3, ofibg4, tBall;
 	public static TextureRegion nibolas1, nibolas2, nibolas3, nibolas4, nibolas5, nibolas6,
-	nibolas7, nibolas8, nibolas9, nibolas10, nibolas11, nibolas12, trStaticNibolas, trCamara,
+	nibolas7, nibolas8, nibolas9, nibolas10, nibolas11, nibolas12, trStaticNibolas, trCamara, trCamara2,
 	guardia1, guardia2, guardia3, guardia4, guardia5,
 	guardia6, guardia7, guardia8, guardia9, guardia10,
 	bin1, bin2, bin3, bin4, bin5, bin6, bin7,
 	bg1, bg2, bg3, bg4, trBall;
-	public static Animation nibolasAnimation, staticNibolas, nibolasAnimationCpy, staticCamara, guardiaAnimation,
+	public static Animation nibolasAnimation, staticNibolas, nibolasAnimationCpy, staticCamara, staticCamaraCpy, guardiaAnimation,
 	guardiaAnimationCpy, binAnimation, staticBin, staticBall;
 	public static Music music_E1;
 	
@@ -42,7 +42,7 @@ public class AssetsLoader {
 		tStaticNibolas = new Texture(Gdx.files.internal("data/stopednibolas.png"));
 		tStaticNibolas.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		
-		tCamara = new Texture(Gdx.files.internal("data/securitycam2.png"));
+		tCamara = new Texture(Gdx.files.internal("data/securitycam.png"));
 		tCamara.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		
 		tGuardia = new Texture(Gdx.files.internal("data/guardsheet.png"));
@@ -97,6 +97,7 @@ public class AssetsLoader {
 		
 		trStaticNibolas = new TextureRegion(tStaticNibolas);
 		trCamara = new TextureRegion(tCamara);
+		trCamara2 = new TextureRegion(tCamara);
 		bg1 = new TextureRegion(ofibg1);
 		bg2 = new TextureRegion(ofibg2);
 		bg3 = new TextureRegion(ofibg3);
@@ -118,6 +119,10 @@ public class AssetsLoader {
 		TextureRegion[] camara = {trCamara};
 		staticCamara = new Animation(1f,camara);
 		staticCamara.setPlayMode(Animation.PlayMode.NORMAL);
+		
+		TextureRegion[] camara2 = {trCamara2};
+		staticCamaraCpy = new Animation(1f,camara2);
+		staticCamaraCpy.setPlayMode(Animation.PlayMode.NORMAL);
 		
 		TextureRegion[] guardias = {guardia1, guardia2, guardia3, guardia4, guardia5};
 		guardiaAnimation = new Animation(0.6f, guardias);
