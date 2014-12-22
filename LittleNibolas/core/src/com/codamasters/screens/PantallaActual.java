@@ -653,7 +653,8 @@ public class PantallaActual implements Screen{
 		timestep = 0;
 		myNibolas.stop();
 		guardiaSprite.pause(); // esto no funciona
-		AssetsLoader.reloadNibolas();
+		AssetsLoader.dispose();
+		AssetsLoader.load();
 		((Game)Gdx.app.getApplicationListener()).setScreen(new GameOver1());
 	}
 	

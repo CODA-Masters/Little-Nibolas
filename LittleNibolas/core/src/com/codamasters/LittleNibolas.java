@@ -18,7 +18,7 @@ public class LittleNibolas extends Game {
 		AssetLoaderSpace.load();
 		AssetsLoader.load();
 		AssetsLoaderRome.load();
-		setScreen(new ScreenSpace());
+		setScreen(new logo());
 	}
 
 	@Override

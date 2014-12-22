@@ -147,60 +147,7 @@ public class AssetsLoader {
 		music_E1 = Gdx.audio.newMusic(Gdx.files.internal("data/Musica.mp3"));
         music_E1.setLooping(true);
 	}
-public static void reloadNibolas(){		
-		
-		int distancia = 438;
-		
-		nibolas1 = new TextureRegion(tNibolas, 0, 0, 150, 335);
-		nibolas2 = new TextureRegion(tNibolas, distancia, 0, 150, 335);
-		nibolas3 = new TextureRegion(tNibolas, distancia*2, 0, 150, 335);
-		nibolas4 = new TextureRegion(tNibolas, distancia*3, 0, 150, 335);
-		nibolas5 = new TextureRegion(tNibolas, distancia*4, 0, 150, 335);
-		nibolas6 = new TextureRegion(tNibolas, distancia*5, 0, 150, 335);
-		
-		nibolas7 = new TextureRegion(tNibolas, 0, 0, 150, 337);
-		nibolas8 = new TextureRegion(tNibolas, distancia, 0, 150, 335);
-		nibolas9 = new TextureRegion(tNibolas, distancia*2, 0, 150, 335);
-		nibolas10 = new TextureRegion(tNibolas, distancia*3, 0, 150, 335);
-		nibolas11 = new TextureRegion(tNibolas, distancia*4, 0, 150, 335);
-		nibolas12 = new TextureRegion(tNibolas, distancia*5, 0, 150, 335);
-		
-		distancia = 438;
-		
-		
-		TextureRegion[] nibolases = { nibolas1, nibolas2, nibolas3, nibolas4, nibolas5, nibolas6 };
-		nibolasAnimation= new Animation(0.06f, nibolases);
-		nibolasAnimation.setPlayMode(Animation.PlayMode.LOOP);
-		
-		
-		TextureRegion[] nibolases2 = { nibolas7, nibolas8, nibolas9, nibolas10, nibolas11, nibolas12 };
-		nibolasAnimationCpy= new Animation(0.06f, nibolases2);
-		nibolasAnimationCpy.setPlayMode(Animation.PlayMode.LOOP);
-		
-		
-		distancia = 131;
-		
-		guardia1 = new TextureRegion(tGuardia,3,0,117,110);
-		guardia2 = new TextureRegion(tGuardia,3+distancia,0,117,110);
-		guardia3 = new TextureRegion(tGuardia,3+distancia*2,0,117,110);
-		guardia4 = new TextureRegion(tGuardia,3+distancia*3,0,117,110);
-		guardia5 = new TextureRegion(tGuardia,3+distancia*4,0,117,110);
-		
-		guardia6 = new TextureRegion(tGuardia,3,0,117,110);
-		guardia7 = new TextureRegion(tGuardia,3+distancia,0,117,110);
-		guardia8 = new TextureRegion(tGuardia,3+distancia*2,0,117,110);
-		guardia9 = new TextureRegion(tGuardia,3+distancia*3,0,117,110);
-		guardia10 = new TextureRegion(tGuardia,3+distancia*4,0,117,110);
-		
-		TextureRegion[] guardias = {guardia1, guardia2, guardia3, guardia4, guardia5};
-		guardiaAnimation = new Animation(0.6f, guardias);
-		guardiaAnimation.setPlayMode(Animation.PlayMode.LOOP);
-		
-		TextureRegion[] guardias2 = {guardia6, guardia7, guardia8, guardia9, guardia10};
-		guardiaAnimationCpy = new Animation(0.6f, guardias2);
-		guardiaAnimationCpy.setPlayMode(Animation.PlayMode.LOOP);
-		
-	}
+
     public static void dispose() {
 		tNibolas.dispose();
 		tStaticNibolas.dispose();
