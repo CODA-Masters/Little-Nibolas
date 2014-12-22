@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.codamasters.LNHelpers.AssetLoaderSpace;
 import com.codamasters.gameobjects.Meteorite;
 import com.codamasters.gameobjects.Nave;
@@ -142,7 +142,6 @@ public class SpaceRenderer {
     	shapeRenderer.circle(meteor5.getX(), meteor5.getHeight(), meteor5.getWidth());
         // End ShapeRenderer
         shapeRenderer.end();*/
-
     }
     private void drawMeteor(){
     	

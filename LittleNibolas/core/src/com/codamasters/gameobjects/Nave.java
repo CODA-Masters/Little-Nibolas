@@ -54,7 +54,7 @@ public class Nave {
 
         // Set the circle's center to be (9, 6) with respect to the bird.
         // Set the circle's radius to be 6.5f;
-        boundingCircle.set(position.x + 9, position.y + 6, 6.5f);
+        boundingCircle.set(position.x + 13, position.y + 12, 10);
 
         // Rotate counterclockwise
         if (velocity.y < 0) {

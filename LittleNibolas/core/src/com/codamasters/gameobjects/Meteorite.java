@@ -84,4 +84,8 @@ public class Meteorite extends Scrollable{
     public void changeSpeed(int v){
 		velocity.x= v;
 	}
+    
+    public Circle getBoundingCircle(){
+    	return meteor;
+    }
 }
