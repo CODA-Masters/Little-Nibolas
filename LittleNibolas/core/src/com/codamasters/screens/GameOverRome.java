@@ -6,7 +6,8 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 import com.codamasters.LittleNibolas;
 import com.codamasters.LNHelpers.AssetLoaderSpace;
-import com.codamasters.LNHelpers.AssetsLoader;
+import com.codamasters.LNHelpers.AssetsLoaderActual;
+import com.codamasters.LNHelpers.AssetsLoaderRome;
 import com.codamasters.tween.ActorAccessor;
 import com.codamasters.tween.SpriteAccessor;
 
@@ -36,13 +37,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class GameOver1 implements Screen {
+public class GameOverRome implements Screen {
 
 	private Stage stage;
 	private Skin skin;
 	private Table table;
 	private TweenManager tweenManager;
-	private Label puntos;
+	private Label puntos, lHighscore;
 	private Sprite splash;
 	private SpriteBatch batch;
 
@@ -67,6 +68,8 @@ public class GameOver1 implements Screen {
 	@Override
 	public void show() {
 		stage = new Stage(new FitViewport(1280,720));
+
+		//Gdx.graphics.setDisplayMode((int) (Gdx.graphics.getHeight() / 1.5f), Gdx.graphics.getHeight(), false);
 		Gdx.input.setInputProcessor(stage);
 
 		skin = new Skin(Gdx.files.internal("ui/menuSkin.json"), new TextureAtlas("ui/atlas.pack"));
@@ -79,18 +82,20 @@ public class GameOver1 implements Screen {
 		heading.setFontScale(3);
 		
 		
-		int score = AssetLoaderSpace.getScore();
-		int highscore = AssetLoaderSpace.getHighScore();
-		/*
+		int score = ScreenRome.getScore();
+		int highscore = ScreenRome.getHighScore();
+		
+		puntos = new Label("Puntuacion obtenida:" + score,skin);
+		puntos.setFontScale(1);
 		if(score > highscore){
-			puntos = new Label("Nuevo record:" + score + "!!!",skin);
-			puntos.setFontScale(1);
-			AssetLoaderSpace.setHighScore(score);
+			lHighscore = new Label("Nuevo record !!!",skin);
+			lHighscore.setFontScale(1);
+			ScreenRome.setHighScore(score);
 		}else{
-			puntos = new Label("Puntuacion obtenida:" + score,skin);
-			puntos.setFontScale(1);
+			lHighscore = new Label("Puntuacion maxima:" + highscore,skin);
+			lHighscore.setFontScale(1);
 		}
-		*/
+		
 		// creating buttons
 		TextButton buttonPlay = new TextButton("Reintentar", skin,"big");
 		buttonPlay.addListener(new ClickListener() {
@@ -100,9 +105,9 @@ public class GameOver1 implements Screen {
 				stage.addAction(sequence(moveTo(0, -stage.getHeight(), .5f), run(new Runnable() {
 
 					@Override
-					public void run() {						
-						PantallaActual pant = new PantallaActual();
-						((Game) Gdx.app.getApplicationListener()).setScreen(pant);
+					public void run() {
+						AssetsLoaderRome.reloadNibolas();
+						((Game) Gdx.app.getApplicationListener()).setScreen(new ScreenRome());
 					}
 				})));
 			}
@@ -119,7 +124,8 @@ public class GameOver1 implements Screen {
 					@Override
 					public void run() {
 						AssetLoaderSpace.music_menu.play();
-						AssetLoaderSpace.estrellado.stop();
+						//AssetLoaderSpace.estrellado.stop();
+						
 						((Game) Gdx.app.getApplicationListener()).setScreen(new LevelMenu());
 					}
 				})));
@@ -128,8 +134,9 @@ public class GameOver1 implements Screen {
 		buttonSettings.pad(10);
 
 		// putting stuff together
-		table.add(heading).spaceBottom(100).row();
-		table.add(puntos).spaceBottom(50).row();
+		table.add(heading).spaceBottom(50).row();
+		table.add(puntos).spaceBottom(10).row();
+		table.add(lHighscore).spaceBottom(20).row();
 		table.add(buttonPlay).spaceBottom(15).row();
 		table.add(buttonSettings).spaceBottom(15).row();
 
@@ -182,4 +189,5 @@ public class GameOver1 implements Screen {
 		skin.dispose();
 
 	}
+
 }

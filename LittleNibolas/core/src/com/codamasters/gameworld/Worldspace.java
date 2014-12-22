@@ -2,8 +2,9 @@ package com.codamasters.gameworld;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.codamasters.screens.CongratsSpace;
 import com.codamasters.screens.FinTercerNivel1;
-import com.codamasters.screens.GameOver;
+import com.codamasters.screens.GameOverSpace;
 import com.codamasters.screens.LevelMenu;
 import com.codamasters.LNHelpers.AssetLoaderSpace;
 import com.codamasters.gameobjects.Nave;
@@ -17,6 +18,7 @@ public class Worldspace {
     @SuppressWarnings("unused")
 	private float runTime = 0;
     private int midPointY;
+    private boolean win;
 
     private GameState currentState;
 
@@ -30,6 +32,7 @@ public class Worldspace {
         myNibolas = new Nave(33, midPointY - 5, 23, 25,midPointY*2);
         // The grass should start 66 pixels below the midPointY
         scroller = new ScrollHandler(this, midPointY);
+        win = false;
     }
 
     public void update(float delta) {
@@ -60,14 +63,18 @@ public class Worldspace {
         	AssetLoaderSpace.tobu.stop();
         	AssetLoaderSpace.setScore(score);
         	AssetLoaderSpace.dead.play();
-            ((Game) Gdx.app.getApplicationListener()).setScreen((new GameOver()));
+        	if(win){
+            	((Game) Gdx.app.getApplicationListener()).setScreen((new CongratsSpace()));
+        	}
+        	else{
+        		((Game) Gdx.app.getApplicationListener()).setScreen((new GameOverSpace()));
+        	}
             //myNibolas.onRestart(midPointY - 5);;
             
             
         }
         if(scroller.getTime()>248){
-        	AssetLoaderSpace.tobu.stop();
-        	((Game) Gdx.app.getApplicationListener()).setScreen((new FinTercerNivel1()));
+        	win = true;
         }
 
         /*if (Intersector.overlaps(myNibolas.getBoundingCircle(), ground)) {

@@ -6,8 +6,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 import com.codamasters.LittleNibolas;
 import com.codamasters.LNHelpers.AssetLoaderSpace;
-import com.codamasters.LNHelpers.AssetsLoader;
-import com.codamasters.LNHelpers.AssetsLoaderRome;
+import com.codamasters.LNHelpers.AssetsLoaderActual;
 import com.codamasters.tween.ActorAccessor;
 import com.codamasters.tween.SpriteAccessor;
 
@@ -43,7 +42,7 @@ public class GameOverActual implements Screen {
 	private Skin skin;
 	private Table table;
 	private TweenManager tweenManager;
-	private Label puntos;
+	private Label puntos, lHighscore;
 	private Sprite splash;
 	private SpriteBatch batch;
 
@@ -53,7 +52,9 @@ public class GameOverActual implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(delta);
 		stage.draw();
-	
+		batch.begin();
+		splash.draw(batch);			
+		batch.end();
 
 		tweenManager.update(delta);
 	}
@@ -68,30 +69,42 @@ public class GameOverActual implements Screen {
 	@Override
 	public void show() {
 		stage = new Stage(new FitViewport(1280,720));
-
-		//Gdx.graphics.setDisplayMode((int) (Gdx.graphics.getHeight() / 1.5f), Gdx.graphics.getHeight(), false);
 		Gdx.input.setInputProcessor(stage);
 
 		skin = new Skin(Gdx.files.internal("ui/menuSkin.json"), new TextureAtlas("ui/atlas.pack"));
-
+		
 		table = new Table(skin);
 		table.setFillParent(true);
+		
+		batch = new SpriteBatch();
 
 		// creating heading
 		Label heading = new Label("Game Over", skin, "big");
 		heading.setFontScale(3);
+
+		tweenManager = new TweenManager();
+		Tween.registerAccessor(Sprite.class, new SpriteAccessor());
+		float width = Gdx.graphics.getWidth();
+	    float height = Gdx.graphics.getHeight();
+		splash = new Sprite(new Texture("data/guardiafrente.png"));
+		splash.setSize(width/4f, height);
+		splash.setPosition((width / 2) - (splash.getWidth() / 2), (height / 8)- (splash.getHeight() / 8));
 		
 		
-		int score = ScreenRome.getScore();
-		int highscore = ScreenRome.getHighScore();
 		
-		if(score > highscore){
-			puntos = new Label("Nuevo record:" + score + "!!!",skin);
-			puntos.setFontScale(1);
-			AssetLoaderSpace.setHighScore(score);
-		}else{
-			puntos = new Label("Puntuacion obtenida:" + score,skin);
-			puntos.setFontScale(1);
+		int score = AssetsLoaderActual.getScore();
+		int highscore = AssetsLoaderActual.getHighScore();
+		
+		puntos = new Label("Tiempo transcurrido: " + score+ " sec",skin);
+		puntos.setFontScale(1);
+		lHighscore = new Label("Puntuacion maxima: " + highscore,skin);
+		lHighscore.setFontScale(1);
+		
+		if(highscore >= 10000){
+			lHighscore.setVisible(false);
+		}
+		else{
+			lHighscore.setVisible(true);
 		}
 		
 		// creating buttons
@@ -103,9 +116,9 @@ public class GameOverActual implements Screen {
 				stage.addAction(sequence(moveTo(0, -stage.getHeight(), .5f), run(new Runnable() {
 
 					@Override
-					public void run() {
-						AssetsLoaderRome.reloadNibolas();
-						((Game) Gdx.app.getApplicationListener()).setScreen(new ScreenRome());
+					public void run() {						
+						PantallaActual pant = new PantallaActual();
+						((Game) Gdx.app.getApplicationListener()).setScreen(pant);
 					}
 				})));
 			}
@@ -122,8 +135,7 @@ public class GameOverActual implements Screen {
 					@Override
 					public void run() {
 						AssetLoaderSpace.music_menu.play();
-						//AssetLoaderSpace.estrellado.stop();
-						
+						AssetLoaderSpace.estrellado.stop();
 						((Game) Gdx.app.getApplicationListener()).setScreen(new LevelMenu());
 					}
 				})));
@@ -132,8 +144,9 @@ public class GameOverActual implements Screen {
 		buttonSettings.pad(10);
 
 		// putting stuff together
-		table.add(heading).spaceBottom(100).row();
-		table.add(puntos).spaceBottom(50).row();
+		table.add(heading).spaceBottom(50).row();
+		table.add(puntos).spaceBottom(10).row();
+		table.add(lHighscore).spaceBottom(20).row();
 		table.add(buttonPlay).spaceBottom(15).row();
 		table.add(buttonSettings).spaceBottom(15).row();
 
@@ -158,6 +171,17 @@ public class GameOverActual implements Screen {
 				.push(Tween.to(buttonSettings, ActorAccessor.ALPHA, .25f).target(1))
 				.end().start(tweenManager);
 
+		Tween.set(splash, SpriteAccessor.ALPHA).target(0).start(tweenManager);
+		//Tween.to(splash, SpriteAccessor.ALPHA, 1.5f).target(1).start(tweenManager);
+		Tween.to(splash, SpriteAccessor.ALPHA, 2f).target(1).repeatYoyo(1, .5f).setCallback(new TweenCallback() {
+			
+			@Override
+			public void onEvent(int type, BaseTween<?> source) {
+
+				//((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+			}
+		}).start(tweenManager);
+		
 		// table fade-in
 		Tween.from(table, ActorAccessor.ALPHA, .75f).target(0).start(tweenManager);
 		Tween.from(table, ActorAccessor.Y, .75f).target(Gdx.graphics.getHeight() / 8).start(tweenManager);
@@ -184,7 +208,6 @@ public class GameOverActual implements Screen {
 	public void dispose() {
 		stage.dispose();
 		skin.dispose();
-
+		splash.getTexture().dispose();
 	}
-
 }

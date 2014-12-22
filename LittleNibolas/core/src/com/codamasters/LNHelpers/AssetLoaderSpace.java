@@ -88,7 +88,7 @@ public class AssetLoaderSpace {
 	    return prefs.getInteger("Score");
 	}
 	public static void setHighScore(int val) {
-	    prefs.putInteger("highScore", val);
+	    prefs.putInteger("HighScore", val);
 	    prefs.flush();
 	}
 	public static void setScore(int val) {
@@ -97,7 +97,7 @@ public class AssetLoaderSpace {
 	}
 	
 	public static int getHighScore() {
-	    return prefs.getInteger("highScore");
+	    return prefs.getInteger("HighScore");
 	}
 
     public static void dispose() {

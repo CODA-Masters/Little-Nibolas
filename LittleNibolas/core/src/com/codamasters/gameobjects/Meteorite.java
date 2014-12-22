@@ -88,4 +88,7 @@ public class Meteorite extends Scrollable{
     public Circle getBoundingCircle(){
     	return meteor;
     }
+    public void setHeight(int y){
+    	this.height= y;
+    }
 }

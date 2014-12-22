@@ -6,7 +6,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 import com.codamasters.LittleNibolas;
 import com.codamasters.LNHelpers.AssetLoaderSpace;
-import com.codamasters.LNHelpers.AssetsLoader;
+import com.codamasters.LNHelpers.AssetsLoaderActual;
 import com.codamasters.tween.ActorAccessor;
 import com.codamasters.tween.SpriteAccessor;
 

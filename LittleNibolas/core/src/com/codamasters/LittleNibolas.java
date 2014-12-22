@@ -2,7 +2,7 @@ package com.codamasters;
 
 import com.badlogic.gdx.Game;
 import com.codamasters.LNHelpers.AssetLoaderSpace;
-import com.codamasters.LNHelpers.AssetsLoader;
+import com.codamasters.LNHelpers.AssetsLoaderActual;
 import com.codamasters.LNHelpers.AssetsLoaderRome;
 import com.codamasters.screens.PantallaActual;
 import com.codamasters.screens.ScreenRome;
@@ -16,7 +16,7 @@ public class LittleNibolas extends Game {
 	@Override
 	public void create() {
 		AssetLoaderSpace.load();
-		AssetsLoader.load();
+		AssetsLoaderActual.load();
 		AssetsLoaderRome.load();
 		setScreen(new logo());
 	}
@@ -25,7 +25,7 @@ public class LittleNibolas extends Game {
 	public void dispose() {
 		super.dispose();
 		AssetLoaderSpace.dispose();
-		AssetsLoader.dispose();
+		AssetsLoaderActual.dispose();
 		AssetsLoaderRome.dispose();
 	}
 

@@ -6,6 +6,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 import com.codamasters.LittleNibolas;
 import com.codamasters.LNHelpers.AssetLoaderSpace;
+import com.codamasters.LNHelpers.AssetsLoaderActual;
 import com.codamasters.tween.ActorAccessor;
 import com.codamasters.tween.SpriteAccessor;
 
@@ -35,13 +36,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class GameOver implements Screen {
+public class GameOverSpace implements Screen {
 
 	private Stage stage;
 	private Skin skin;
 	private Table table;
 	private TweenManager tweenManager;
-	private Label puntos;
+	private Label puntos, lHighscore;
 	private Sprite splash;
 	private SpriteBatch batch;
 
@@ -81,8 +82,6 @@ public class GameOver implements Screen {
 		heading.setFontScale(3);
 		
 		//Gdx.graphics.setVSync(Settings.vSync());
-		
-		
 		batch = new SpriteBatch();
 
 		tweenManager = new TweenManager();
@@ -90,21 +89,21 @@ public class GameOver implements Screen {
 		float width = Gdx.graphics.getWidth();
 	    float height = Gdx.graphics.getHeight();
 		splash = new Sprite(new Texture("data/roca-Rajoy.png"));
-		float desiredWidth = width * .7f;
-        float scale = 0.5f;
-		splash.setSize(width/1.5f, height);
-		splash.setPosition((width / 8) - (splash.getWidth() / 8), (height / 8)- (splash.getHeight() / 8));
+		splash.setSize(width/2f, height);
+		splash.setPosition((width / 2) - (splash.getWidth() / 2), (height / 8)- (splash.getHeight() / 8));
 		
 		int score = AssetLoaderSpace.getScore();
 		int highscore = AssetLoaderSpace.getHighScore();
 		
+		puntos = new Label("Puntuacion obtenida:" + score,skin);
+		puntos.setFontScale(1);
 		if(score > highscore){
-			puntos = new Label("Nuevo record:" + score + "!!!",skin);
-			puntos.setFontScale(1);
+			lHighscore = new Label("Nuevo record !!!",skin);
+			lHighscore.setFontScale(1);
 			AssetLoaderSpace.setHighScore(score);
 		}else{
-			puntos = new Label("Puntuacion obtenida:" + score,skin);
-			puntos.setFontScale(1);
+			lHighscore = new Label("Puntuacion maxima:" + highscore,skin);
+			lHighscore.setFontScale(1);
 		}
 		
 		// creating buttons
@@ -143,8 +142,9 @@ public class GameOver implements Screen {
 		buttonSettings.pad(10);
 
 		// putting stuff together
-		table.add(heading).spaceBottom(100).row();
-		table.add(puntos).spaceBottom(50).row();
+		table.add(heading).spaceBottom(50).row();
+		table.add(puntos).spaceBottom(10).row();
+		table.add(lHighscore).spaceBottom(20).row();
 		table.add(buttonPlay).spaceBottom(15).row();
 		table.add(buttonSettings).spaceBottom(15).row();
 

@@ -37,7 +37,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
 import com.codamasters.LNHelpers.AnimatedSprite;
 import com.codamasters.LNHelpers.AssetLoaderSpace;
-import com.codamasters.LNHelpers.AssetsLoader;
+import com.codamasters.LNHelpers.AssetsLoaderActual;
 import com.codamasters.LNHelpers.AssetsLoaderRome;
 import com.codamasters.LNHelpers.InputHandlerRome;
 import com.codamasters.gameobjects.Horse;
@@ -80,7 +80,7 @@ public class ScreenRome implements Screen{
 	private float posY;
 	private int posX;
 	private Plataforma plataforma;
-	private boolean direc;
+	private boolean direc, win;
 	private Soldado sold;
 	private static Preferences prefs;
 	private static int score=0;
@@ -234,17 +234,17 @@ public class ScreenRome implements Screen{
 	        batch.end();
 	        */
 						
-			if(score > getHighScore()){
-				setHighScore(score);
-			}
-			setScore(score);
-			AssetsLoaderRome.music_R.stop();
-            ((Game) Gdx.app.getApplicationListener()).setScreen((new GameOverActual()));
+		setScore(score);
+		AssetsLoaderRome.music_R.stop();
+		if(win)
+			((Game) Gdx.app.getApplicationListener()).setScreen((new CongratsRome()));
+		else
+			((Game) Gdx.app.getApplicationListener()).setScreen((new GameOverRome()));
 
 		}
-		if(score>100){
-			AssetsLoaderRome.music_R.stop();
-			((Game) Gdx.app.getApplicationListener()).setScreen((new FinSegundoNivel1()));
+		if(score>=100){
+			win = true;
+			
 		}
 		
 	}
@@ -334,6 +334,7 @@ public class ScreenRome implements Screen{
 
         time = 0;
         score = 0;
+        win = false;
 		
         AssetsLoaderRome.music_R.play();
 		world = new World(new Vector2(0, -9.81f), true);

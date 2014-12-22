@@ -1,15 +1,17 @@
 package com.codamasters.LNHelpers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
-public class AssetsLoader {
+public class AssetsLoaderActual {
 	
 	public static Texture tNibolas, tStaticNibolas, tCamara, tGuardia, tBin, ofibg1, ofibg2, ofibg3, ofibg4, tBall;
 	public static TextureRegion nibolas1, nibolas2, nibolas3, nibolas4, nibolas5, nibolas6,
@@ -21,6 +23,8 @@ public class AssetsLoader {
 	public static Animation nibolasAnimation, staticNibolas, nibolasAnimationCpy, staticCamara, staticCamaraCpy, guardiaAnimation,
 	guardiaAnimationCpy, binAnimation, staticBin, staticBall;
 	public static Music music_E1;
+	private static Preferences prefs;
+	public static BitmapFont font, shadow;
 	
 	public static void load() {
 		
@@ -146,6 +150,21 @@ public class AssetsLoader {
 		
 		music_E1 = Gdx.audio.newMusic(Gdx.files.internal("data/Musica.mp3"));
         music_E1.setLooping(true);
+        
+        prefs = Gdx.app.getPreferences("LittleNibolas");
+        
+        
+        if (!prefs.contains("ScoreActual")) {
+            prefs.putInteger("ScoreActual", 0);
+        }
+        if (!prefs.contains("HighScoreActual")) {
+            prefs.putInteger("HighScoreActual", 10000);
+        }
+        
+        font = new BitmapFont(Gdx.files.internal("data/text.fnt"));
+        font.setScale(.025f, -.025f);
+        shadow = new BitmapFont(Gdx.files.internal("data/shadow.fnt"));
+        shadow.setScale(.025f, -.025f);
 	}
 
     public static void dispose() {
@@ -160,6 +179,25 @@ public class AssetsLoader {
 		ofibg4.dispose();
 		tBall.dispose();
 		music_E1.dispose();
+	}
+    
+    public static Preferences getPref(){
+    	return prefs;
+    }
+    public static int getScore() {
+	    return prefs.getInteger("ScoreActual");
+	}
+	public static void setHighScore(int val) {
+	    prefs.putInteger("HighScoreActual", val);
+	    prefs.flush();
+	}
+	public static void setScore(int val) {
+	    prefs.putInteger("ScoreActual", val);
+	    prefs.flush();
+	}
+	
+	public static int getHighScore() {
+	    return prefs.getInteger("HighScoreActual");
 	}
 
 }

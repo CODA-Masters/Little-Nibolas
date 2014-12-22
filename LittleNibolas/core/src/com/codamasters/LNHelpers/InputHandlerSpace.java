@@ -2,6 +2,7 @@ package com.codamasters.LNHelpers;
 
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Keys;
 import com.codamasters.gameobjects.Nave;
 import com.codamasters.gameworld.Worldspace;
 
@@ -30,7 +31,6 @@ public class InputHandlerSpace implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         screenX = scaleX(screenX);
         screenY = scaleY(screenY);
-        System.out.println(screenX + " " + screenY);
 
         myNibolas.onClick();
 
@@ -49,7 +49,15 @@ public class InputHandlerSpace implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-		return false;
+    	switch(keycode){
+    	case Keys.SPACE:
+    		myNibolas.onClick();
+    		break;
+    	case Keys.UP:
+    		myNibolas.onClick();
+    		break;
+    	}
+		return true;
 
     }
 

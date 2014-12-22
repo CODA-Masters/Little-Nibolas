@@ -37,7 +37,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
 import com.codamasters.LNHelpers.AnimatedSprite;
-import com.codamasters.LNHelpers.AssetsLoader;
+import com.codamasters.LNHelpers.AssetsLoaderActual;
+import com.codamasters.LNHelpers.AssetsLoaderRome;
 import com.codamasters.LNHelpers.InputHandler;
 import com.codamasters.gameobjects.Ball;
 import com.codamasters.gameobjects.BallsTrap;
@@ -55,6 +56,7 @@ public class PantallaActual implements Screen{
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
 	private float runTime;
+	private int score, inc;
 	
 	private static Animation nibolasAnimation;
 	private static Animation nibolasAnimationReversed;
@@ -113,6 +115,8 @@ public class PantallaActual implements Screen{
 		float gameHeight = screenHeight / (screenWidth / gameWidth);
 		
 		runTime = 0;
+		inc = 0;
+		score = 0;
 		hide = false;
 		insideBin = false;
 		pantalla = this;
@@ -135,21 +139,21 @@ public class PantallaActual implements Screen{
 	}
 	
 	private void initAssets(){
-		AssetsLoader.music_E1.play();
-		nibolasAnimation = AssetsLoader.nibolasAnimation;
-		nibolasAnimationReversed = AssetsLoader.nibolasAnimationCpy;
-		staticNibolas = AssetsLoader.staticNibolas;
-		staticCamara = AssetsLoader.staticCamara;
-		staticCamaraCpy = AssetsLoader.staticCamaraCpy;
-		guardiaAnimation = AssetsLoader.guardiaAnimation;
-		guardiaAnimationCpy = AssetsLoader.guardiaAnimationCpy;
-		binAnimation = AssetsLoader.binAnimation;
-		staticBin = AssetsLoader.staticBin;
-		staticBall = AssetsLoader.staticBall;
-		bg1 = AssetsLoader.bg1;
-		bg2 = AssetsLoader.bg2;
-		bg3 = AssetsLoader.bg3;
-		bg4 = AssetsLoader.bg4;
+		AssetsLoaderActual.music_E1.play();
+		nibolasAnimation = AssetsLoaderActual.nibolasAnimation;
+		nibolasAnimationReversed = AssetsLoaderActual.nibolasAnimationCpy;
+		staticNibolas = AssetsLoaderActual.staticNibolas;
+		staticCamara = AssetsLoaderActual.staticCamara;
+		staticCamaraCpy = AssetsLoaderActual.staticCamaraCpy;
+		guardiaAnimation = AssetsLoaderActual.guardiaAnimation;
+		guardiaAnimationCpy = AssetsLoaderActual.guardiaAnimationCpy;
+		binAnimation = AssetsLoaderActual.binAnimation;
+		staticBin = AssetsLoaderActual.staticBin;
+		staticBall = AssetsLoaderActual.staticBall;
+		bg1 = AssetsLoaderActual.bg1;
+		bg2 = AssetsLoaderActual.bg2;
+		bg3 = AssetsLoaderActual.bg3;
+		bg4 = AssetsLoaderActual.bg4;
 		
 		animatedSprite = new AnimatedSprite(nibolasAnimation);
 		reversedSprite = new AnimatedSprite(nibolasAnimationReversed);
@@ -442,7 +446,13 @@ public class PantallaActual implements Screen{
 
 	@Override
 	public void render(float delta) {
-		runTime += delta;
+		
+		inc+=1;
+    	if(inc%60==0){
+    		addScore(1);
+    		runTime+=1;
+    		inc=0;
+    	}
 		Gdx.gl.glClearColor(90 / 255f, 89 / 255f, 94 / 255f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
@@ -520,7 +530,7 @@ public class PantallaActual implements Screen{
 		drawSecurityCam();
 		drawBin();
 		drawGuard();
-		drawBall();
+		drawBall();AssetsLoaderActual.setScore(score);
 		
 		batch.end();
 		
@@ -545,6 +555,7 @@ public class PantallaActual implements Screen{
 			}
 		}
 		
+		
 		//debugRenderer.render(world, camera.combined);
 
 
@@ -553,8 +564,9 @@ public class PantallaActual implements Screen{
 		// CONDICIÓN DE ACABAR NIVEL
 		
 		if(myNibolas.getBody().getPosition().x > 173 && !stop){
-			AssetsLoader.music_E1.stop();
-			((Game)Gdx.app.getApplicationListener()).setScreen(new FinPrimerNivel1());
+			AssetsLoaderActual.music_E1.stop();
+			AssetsLoaderActual.setScore(score);
+			((Game)Gdx.app.getApplicationListener()).setScreen(new CongratsActual());
 		}
 		
 		
@@ -649,13 +661,14 @@ public class PantallaActual implements Screen{
 	}
 	
 	public void stop(){
-		AssetsLoader.music_E1.stop();
+		AssetsLoaderActual.music_E1.stop();
 		timestep = 0;
 		myNibolas.stop();
 		guardiaSprite.pause(); // esto no funciona
-		AssetsLoader.dispose();
-		AssetsLoader.load();
-		((Game)Gdx.app.getApplicationListener()).setScreen(new GameOver1());
+		AssetsLoaderActual.setScore(score);
+		AssetsLoaderActual.dispose();
+		AssetsLoaderActual.load();
+		((Game)Gdx.app.getApplicationListener()).setScreen(new GameOverActual());
 	}
 	
 	public Nibolas getNibolas(){
@@ -672,6 +685,10 @@ public class PantallaActual implements Screen{
 	
 	public World getWorld(){
 		return world;
+	}
+	
+	public void addScore(int n){
+		score+=n;
 	}
 	
 

@@ -56,7 +56,7 @@ public class FinSegundoNivel2 implements Screen {
 		//Colocar el splash centrado y adaptado a las dimensiones de la pantalla
 		float width = Gdx.graphics.getWidth();
 	    float height = Gdx.graphics.getHeight();
-		splash = new Sprite(new Texture("data/cesar1.png"));
+		splash = new Sprite(new Texture("data/Cesar1.png"));
 		float desiredWidth = width * .7f;
         float scale = desiredWidth / splash.getWidth();
 		splash.setSize(splash.getWidth() * scale, splash.getHeight() * scale);

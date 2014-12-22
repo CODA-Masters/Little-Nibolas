@@ -15,23 +15,25 @@ public class ScrollHandler {
     public static int SPACE = 50;
     private float inc;
     private int time;
-    private boolean modoExtreme;
+    private boolean modoExtreme,alt;
     private Worldspace gameWorld;
     private Space space1,space2;
+    private int midpointy;
 
     public ScrollHandler(Worldspace gameWorld, int yPos) {
         this.gameWorld = gameWorld;
         modoExtreme=false;
+        midpointy=yPos;
         inc=0f;
-        space1 = new Space(0, 0, 209, (yPos*2)+1, SCROLL_SPEED_SPACE);
-        space2 = new Space(space1.getTailX(), 0, 209, (yPos*2)+1, 
-
-SCROLL_SPEED_SPACE);
+        space1 = new Space(0, 0, 400, (yPos*2)+1, SCROLL_SPEED_SPACE);
+        space2 = new Space(space1.getTailX(), 0, 400, (yPos*2)+1, SCROLL_SPEED_SPACE);
         meteor1= new Meteorite(420, 0,SCROLL_SPEED);
         meteor2= new Meteorite(meteor1.getTailX()+ SPACE, 0,SCROLL_SPEED);
         meteor3= new Meteorite(meteor2.getTailX()+ SPACE, 0,SCROLL_SPEED);
         meteor4= new Meteorite(meteor3.getTailX()+ SPACE, 0,SCROLL_SPEED);
         meteor5= new Meteorite(meteor4.getTailX()+ SPACE, 0,SCROLL_SPEED);
+        meteor5.setHeight(15);
+        alt=false;
     }
 
     public void updateReady(float delta) {
@@ -84,6 +86,12 @@ SCROLL_SPEED_SPACE);
 	    }
 	    else if (meteor5.isScrolledLeft()) {
 	    	meteor5.reset(meteor4.getTailX() + SPACE);
+	    	if(alt){
+	    		meteor5.setHeight(15);
+	    		
+	    	}else{
+	    		meteor5.setHeight((midpointy*2)-20);
+	    	}
 	    }
     	
 	    if(space1.isScrolledLeft()){
