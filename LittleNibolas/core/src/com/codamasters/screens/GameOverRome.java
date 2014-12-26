@@ -106,7 +106,6 @@ public class GameOverRome implements Screen {
 
 					@Override
 					public void run() {
-						AssetsLoaderRome.reloadNibolas();
 						((Game) Gdx.app.getApplicationListener()).setScreen(new ScreenRome());
 					}
 				})));

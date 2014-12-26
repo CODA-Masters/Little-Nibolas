@@ -19,6 +19,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -54,6 +56,7 @@ public class ScreenRome implements Screen{
 	private World world;
 	private Box2DDebugRenderer debugRenderer;
 	private SpriteBatch batch;
+	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
 
 	private final float TIMESTEP = 1 / 60f;
@@ -85,6 +88,12 @@ public class ScreenRome implements Screen{
 	private static Preferences prefs;
 	private static int score=0;
 	private int tiempoPlataforma;
+	
+	private int screenWidth;
+	private int screenHeight;
+	private int gameWidth;
+	private int gameHeight;
+	private int midPointY;
 
 
 	@Override
@@ -131,17 +140,13 @@ public class ScreenRome implements Screen{
 			sold.getAnimatedSprite().setKeepSize(true);
 			sold.getAnimatedSprite().draw(batch);
 			*/
-			
 		    String scoreText = getScore() + "";
 	        // Draw shadow first
-		    AssetsLoaderRome.shadow.setScale(0.03f);
-		    AssetsLoaderRome.shadow.draw(batch, "" + getScore(),camera.position.x-scoreText.length()/2,camera.position.y+camera.viewportHeight/4);
 	        // Draw text
-		    AssetsLoaderRome.font.setScale(0.03f);
-		    AssetsLoaderRome.font.draw(batch, "" + getScore(), camera.position.x-scoreText.length()/2-0.01f,camera.position.y+camera.viewportHeight/4);
+		    AssetsLoaderRome.font.setScale(0.029f);
+		    AssetsLoaderRome.font.draw(batch, "" + getScore(), camera.position.x-scoreText.length()/2,camera.position.y+camera.viewportHeight/3);
 			
 			batch.end();
-			
 			myHorse.update();
 			
 			
@@ -236,6 +241,7 @@ public class ScreenRome implements Screen{
 						
 		setScore(score);
 		AssetsLoaderRome.music_R.stop();
+		AssetsLoaderRome.reloadNibolas();
 		if(win)
 			((Game) Gdx.app.getApplicationListener()).setScreen((new CongratsRome()));
 		else
@@ -327,10 +333,11 @@ public class ScreenRome implements Screen{
 	@Override
 	public void show() {
 		
-		float screenWidth = 980;
-		float screenHeight = 720;
-		float gameWidth = 203;
-		float gameHeight = screenHeight / (screenWidth / gameWidth);
+		screenWidth = 980;
+		screenHeight = 720;
+		gameWidth = 203;
+		gameHeight = screenHeight / (screenWidth / gameWidth);
+		midPointY = gameHeight / 2;
 
         time = 0;
         score = 0;
@@ -340,7 +347,7 @@ public class ScreenRome implements Screen{
 		world = new World(new Vector2(0, -9.81f), true);
 		debugRenderer = new Box2DDebugRenderer();
 		batch = new SpriteBatch();
-	
+		shapeRenderer = new ShapeRenderer();
 		
 
 		

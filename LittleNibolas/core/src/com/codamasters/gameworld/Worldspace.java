@@ -73,7 +73,7 @@ public class Worldspace {
             
             
         }
-        if(scroller.getTime()>248){
+        if(scroller.getTime()>150){
         	win = true;
         }
 
