@@ -5,6 +5,7 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -26,11 +27,12 @@ import com.codamasters.gameobjects.Soldado;
 public class AssetsLoaderRome {
 		
 	public static Texture backgroundTexture, tNibolas;
-	public static TextureRegion background, regionPlataforma, flecha, nibolas1, nibolas2, nibolas3, nibolas4, nibolas5, nibolas6;
-    public static Animation animation, animPlataforma, animFlecha;
+	public static TextureRegion background, regionPlataforma, flecha, nibolas1, nibolas2, nibolas3, nibolas4, nibolas5, nibolas6, escudo;
+    public static Animation animation, animPlataforma, animFlecha, animEscudo;
     public static BitmapFont font, shadow;
-	public static AnimatedSprite fondo, animSpritePlataforma, animSpriteFlecha, animatedSprite;
+	public static AnimatedSprite fondo, animSpritePlataforma, animSpriteFlecha, animatedSprite, animSpriteEscudo;
 	public static Music music_R;
+	public static Sound win;
 	private static Array<TextureRegion> sprites;
 	
 	public static void load() {
@@ -59,9 +61,8 @@ public class AssetsLoaderRome {
 		animatedSprite = new AnimatedSprite(animation);
 		
 		flecha = new TextureRegion(new Texture(Gdx.files.internal("data/flecha.png")));
+		escudo = new TextureRegion(new Texture(Gdx.files.internal("data/escudo.png")));
 		 
-		 
-		
 		backgroundTexture = new Texture(Gdx.files.internal("data/background.png"));  
 		background = new TextureRegion(backgroundTexture);
 
@@ -69,17 +70,21 @@ public class AssetsLoaderRome {
 		animFlecha = new Animation(1f, flecha);
 		animSpriteFlecha = new AnimatedSprite(animFlecha);
 		
+		animEscudo = new Animation(1f, escudo);
+		animSpriteEscudo = new AnimatedSprite(animEscudo);
+		
 		regionPlataforma = new TextureRegion(new Texture(Gdx.files.internal("data/plataforma.jpg")));
 		animPlataforma = new Animation(1f, regionPlataforma);
 		animSpritePlataforma = new AnimatedSprite(animPlataforma);
 		
 		font = new BitmapFont(Gdx.files.internal("data/text.fnt"));
-        font.setScale(.25f, -.25f);
+		font.setScale(.25f, -.25f);
         shadow = new BitmapFont(Gdx.files.internal("data/shadow.fnt"));
         shadow.setScale(.25f, -.25f);
-	
 		music_R= Gdx.audio.newMusic(Gdx.files.internal("data/romano.mp3"));
 		music_R.setLooping(true);
+		
+		win = Gdx.audio.newSound(Gdx.files.internal("data/tada.mp3"));
 		
 	}
 	

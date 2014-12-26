@@ -2,6 +2,7 @@ package com.codamasters.gameworld;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.codamasters.LittleNibolas;
 import com.codamasters.screens.CongratsSpace;
 import com.codamasters.screens.FinTercerNivel1;
 import com.codamasters.screens.GameOverSpace;
@@ -19,20 +20,17 @@ public class Worldspace {
 	private float runTime = 0;
     private int midPointY;
     private boolean win;
+    private LittleNibolas game;
 
-    private GameState currentState;
 
-    public enum GameState {
-        MENU, READY, RUNNING, GAMEOVER, HIGHSCORE
-    }
-
-    public Worldspace(int midPointY) {
+    public Worldspace(int midPointY, LittleNibolas game) {
         //currentState = GameState.MENU;
         this.midPointY = midPointY;
         myNibolas = new Nave(33, midPointY - 5, 23, 25,midPointY*2);
         // The grass should start 66 pixels below the midPointY
         scroller = new ScrollHandler(this, midPointY);
         win = false;
+        this.game = game;
     }
 
     public void update(float delta) {
@@ -64,10 +62,10 @@ public class Worldspace {
         	AssetLoaderSpace.setScore(score);
         	AssetLoaderSpace.dead.play();
         	if(win){
-            	((Game) Gdx.app.getApplicationListener()).setScreen((new CongratsSpace()));
+            	((Game) Gdx.app.getApplicationListener()).setScreen((new CongratsSpace(game)));
         	}
         	else{
-        		((Game) Gdx.app.getApplicationListener()).setScreen((new GameOverSpace()));
+        		((Game) Gdx.app.getApplicationListener()).setScreen((new GameOverSpace(game)));
         	}
             //myNibolas.onRestart(midPointY - 5);;
             
@@ -111,14 +109,6 @@ public class Worldspace {
         score += increment;
     }
 
-    public void start() {
-        currentState = GameState.RUNNING;
-    }
-
-    public void ready() {
-        currentState = GameState.READY;
-    }
-
     public void restart() {
         //currentState = GameState.READY;
         score = 0;
@@ -126,26 +116,6 @@ public class Worldspace {
         scroller.onRestart();
         AssetLoaderSpace.tobu.play();
         //currentState = GameState.READY;
-    }
-
-    public boolean isReady() {
-        return currentState == GameState.READY;
-    }
-
-    public boolean isGameOver() {
-        return currentState == GameState.GAMEOVER;
-    }
-
-    public boolean isHighScore() {
-        return currentState == GameState.HIGHSCORE;
-    }
-
-    public boolean isMenu() {
-        return currentState == GameState.MENU;
-    }
-
-    public boolean isRunning() {
-        return currentState == GameState.RUNNING;
     }
 
 }

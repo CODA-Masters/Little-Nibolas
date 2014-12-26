@@ -4,6 +4,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
+import com.codamasters.LittleNibolas;
 import com.codamasters.LNHelpers.AssetLoaderSpace;
 import com.codamasters.LNHelpers.AssetsLoaderActual;
 import com.codamasters.tween.ActorAccessor;
@@ -29,11 +30,16 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class CongratsActual implements Screen {
 
+	private LittleNibolas game;
 	private Stage stage;
 	private Skin skin;
 	private Table table;
 	private TweenManager tweenManager;
 	private Label puntos, lHighscore;
+	
+	public CongratsActual(LittleNibolas game){
+		this.game = game;
+	}
 
 	@Override
 	public void render(float delta) {
@@ -92,7 +98,7 @@ public class CongratsActual implements Screen {
 
 					@Override
 					public void run() {						
-						((Game) Gdx.app.getApplicationListener()).setScreen(new FinPrimerNivel1());
+						((Game) Gdx.app.getApplicationListener()).setScreen(new FinPrimerNivel1(game));
 					}
 				})));
 			}
@@ -110,7 +116,7 @@ public class CongratsActual implements Screen {
 					public void run() {
 						AssetsLoaderActual.dispose();
 						AssetsLoaderActual.load();
-						((Game) Gdx.app.getApplicationListener()).setScreen(new PantallaActual());
+						((Game) Gdx.app.getApplicationListener()).setScreen(new PantallaActual(game));
 					}
 				})));
 			}

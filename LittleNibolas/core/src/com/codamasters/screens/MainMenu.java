@@ -47,6 +47,11 @@ public class MainMenu implements Screen {
 	private SpriteBatch batch;
 	private float width;
 	private float height;
+	private LittleNibolas game;
+	
+	public MainMenu(LittleNibolas game){
+		this.game = game;
+	}
 
 	@Override
 	public void render(float delta) {
@@ -116,7 +121,7 @@ public class MainMenu implements Screen {
 					
 					@Override
 					public void run() {
-						((Game) Gdx.app.getApplicationListener()).setScreen(new LevelMenu());
+						((Game) Gdx.app.getApplicationListener()).setScreen(new LevelMenu(game));
 					}
 				})));
 			}
@@ -133,7 +138,7 @@ public class MainMenu implements Screen {
 
 					@Override
 					public void run() {
-						((Game) Gdx.app.getApplicationListener()).setScreen(new Settings());
+						((Game) Gdx.app.getApplicationListener()).setScreen(new Settings(game));
 					}
 				})));
 			}

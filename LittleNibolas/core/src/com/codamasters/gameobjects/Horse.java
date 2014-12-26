@@ -39,6 +39,7 @@ public class Horse implements ContactFilter, ContactListener {
 	private boolean salto_1, salto_2;
 	private boolean mov_ant, mov_nuevo; // true--> Derecha, false-->Izquierda
 	private int num_saltos;
+	private int vidas;
 
 
 	public Horse(World world, ScreenRome pantalla, float x, float y, float width, float height) {
@@ -51,6 +52,7 @@ public class Horse implements ContactFilter, ContactListener {
 		this.mov_ant=true;
 		this.mov_nuevo=true;
 		this.num_saltos=0;
+		this.vidas = 1;
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
@@ -148,10 +150,15 @@ public class Horse implements ContactFilter, ContactListener {
 			if( mov_ant!=mov_nuevo)
 				pantalla.getSprite().flipFrames(true, false);
 			
+			// SALTAR !!!
+			
+			/*  
+			
 			if(num_saltos < 2 && mov_ant==mov_nuevo){
 				body.setLinearVelocity(body.getLinearVelocity().x, 5);
 				num_saltos++;
 			}
+			*/
 			
 			mov_ant=mov_nuevo;	
 		}
@@ -180,6 +187,16 @@ public class Horse implements ContactFilter, ContactListener {
 	public void setNumSaltos(int num_saltos){
 		this.num_saltos=num_saltos;
 	}
+	
+	public int getVidas(){
+		return vidas;
+	}
+	
+	public void setVidas(int vidas){
+		this.vidas = vidas;
+	}
 
 }
+
+
 

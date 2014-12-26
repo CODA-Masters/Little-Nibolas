@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
@@ -36,6 +37,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
+import com.codamasters.LittleNibolas;
 import com.codamasters.LNHelpers.AnimatedSprite;
 import com.codamasters.LNHelpers.AssetsLoaderActual;
 import com.codamasters.LNHelpers.AssetsLoaderRome;
@@ -50,6 +52,7 @@ import com.codamasters.gameobjects.SecurityCam;
 
 public class PantallaActual implements Screen{
 	
+	private LittleNibolas game;
 	private World world;
 	private Box2DDebugRenderer debugRenderer;
 	private SpriteBatch batch;
@@ -107,7 +110,9 @@ public class PantallaActual implements Screen{
 	private float fondoY;
 	private float groundPos;
 	
-	public PantallaActual(){
+	public PantallaActual(LittleNibolas game){
+		
+		this.game = game;
 		
 		float screenWidth = 980;
 		float screenHeight = 720;
@@ -566,7 +571,7 @@ public class PantallaActual implements Screen{
 		if(myNibolas.getBody().getPosition().x > 173 && !stop){
 			AssetsLoaderActual.music_E1.stop();
 			AssetsLoaderActual.setScore(score);
-			((Game)Gdx.app.getApplicationListener()).setScreen(new CongratsActual());
+			((Game)Gdx.app.getApplicationListener()).setScreen(new CongratsActual(game));
 		}
 		
 		
@@ -668,7 +673,7 @@ public class PantallaActual implements Screen{
 		AssetsLoaderActual.setScore(score);
 		AssetsLoaderActual.dispose();
 		AssetsLoaderActual.load();
-		((Game)Gdx.app.getApplicationListener()).setScreen(new GameOverActual());
+		((Game)Gdx.app.getApplicationListener()).setScreen(new GameOverActual(game));
 	}
 	
 	public Nibolas getNibolas(){

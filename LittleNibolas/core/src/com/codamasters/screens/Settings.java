@@ -28,6 +28,11 @@ public class Settings implements Screen {
 	private Stage stage;
 	private Table table;
 	private Skin skin;
+	private LittleNibolas game;
+	
+	public Settings(LittleNibolas game){
+		this.game = game;
+	}
 
 	/** @return the directory the levels will be saved to and read from */
 	public static FileHandle levelDirectory() {
@@ -107,7 +112,7 @@ public class Settings implements Screen {
 
 						@Override
 						public void run() {
-							((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+							((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(game));
 						}
 					})));
 				}

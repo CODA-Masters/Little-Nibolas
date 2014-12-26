@@ -1,6 +1,8 @@
 package com.codamasters.screens;
 
+import com.codamasters.LittleNibolas;
 import com.codamasters.tween.SpriteAccessor;
+
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
@@ -19,6 +21,11 @@ public class logo implements Screen {
 	private SpriteBatch batch;
 	private Sprite splash;
 	private TweenManager tweenManager;
+	private LittleNibolas game;
+	
+	public logo(LittleNibolas game){
+		this.game = game;
+	}
 	
 
 	@Override
@@ -46,7 +53,6 @@ public class logo implements Screen {
 		// apply preferences
 		//Gdx.graphics.setVSync(Settings.vSync());
 		
-		
 		batch = new SpriteBatch();
 
 		tweenManager = new TweenManager();
@@ -66,7 +72,7 @@ public class logo implements Screen {
 
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
-				((Game) Gdx.app.getApplicationListener()).setScreen(new Splash());
+				((Game) Gdx.app.getApplicationListener()).setScreen(new Splash(game));
 				//((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
 			}
 		}).start(tweenManager);

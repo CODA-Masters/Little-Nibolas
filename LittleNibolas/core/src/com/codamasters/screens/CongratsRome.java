@@ -4,6 +4,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
+import com.codamasters.LittleNibolas;
 import com.codamasters.LNHelpers.AssetLoaderSpace;
 import com.codamasters.LNHelpers.AssetsLoaderActual;
 import com.codamasters.LNHelpers.AssetsLoaderRome;
@@ -35,6 +36,11 @@ public class CongratsRome implements Screen {
 	private Table table;
 	private TweenManager tweenManager;
 	private Label puntos, lHighscore;
+	private LittleNibolas game;
+	
+	public CongratsRome(LittleNibolas game){
+		this.game = game;
+	}
 
 	@Override
 	public void render(float delta) {
@@ -92,7 +98,7 @@ public class CongratsRome implements Screen {
 
 					@Override
 					public void run() {						
-						((Game) Gdx.app.getApplicationListener()).setScreen(new FinSegundoNivel1());
+						((Game) Gdx.app.getApplicationListener()).setScreen(new FinSegundoNivel1(game));
 					}
 				})));
 			}
@@ -109,7 +115,7 @@ public class CongratsRome implements Screen {
 					@Override
 					public void run() {
 						AssetsLoaderRome.reloadNibolas();
-						((Game) Gdx.app.getApplicationListener()).setScreen(new ScreenRome());
+						((Game) Gdx.app.getApplicationListener()).setScreen(new ScreenRome(game));
 					}
 				})));
 			}

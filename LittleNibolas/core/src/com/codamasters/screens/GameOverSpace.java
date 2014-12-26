@@ -45,6 +45,11 @@ public class GameOverSpace implements Screen {
 	private Label puntos, lHighscore;
 	private Sprite splash;
 	private SpriteBatch batch;
+	private LittleNibolas game;
+	
+	public GameOverSpace(LittleNibolas game){
+		this.game = game;
+	}
 
 	@Override
 	public void render(float delta) {
@@ -116,7 +121,7 @@ public class GameOverSpace implements Screen {
 
 					@Override
 					public void run() {
-						((Game) Gdx.app.getApplicationListener()).setScreen(new ScreenSpace());
+						((Game) Gdx.app.getApplicationListener()).setScreen(new ScreenSpace(game));
 					}
 				})));
 			}
@@ -134,7 +139,7 @@ public class GameOverSpace implements Screen {
 					public void run() {
 						AssetLoaderSpace.music_menu.play();
 						AssetLoaderSpace.estrellado.stop();
-						((Game) Gdx.app.getApplicationListener()).setScreen(new LevelMenu());
+						((Game) Gdx.app.getApplicationListener()).setScreen(new LevelMenu(game));
 					}
 				})));
 			}
@@ -185,6 +190,12 @@ public class GameOverSpace implements Screen {
 		Tween.from(table, ActorAccessor.Y, .75f).target(Gdx.graphics.getHeight() / 8).start(tweenManager);
 
 		tweenManager.update(Gdx.graphics.getDeltaTime());
+		
+		game.intentos++;
+		if(game.intentos > 1){
+			game.actionResolver.showOrLoadInterstital();
+			game.intentos = 0;
+		}
 	}
 
 	@Override

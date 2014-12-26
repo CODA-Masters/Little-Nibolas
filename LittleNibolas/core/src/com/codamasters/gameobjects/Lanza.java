@@ -39,10 +39,11 @@ public class Lanza implements ContactFilter, ContactListener {
 	private Random rand;
 	private float x,y;
 	private boolean esMortal;
-	private int minVelocidad = 8;
-	private int maxVelocidad = 18;
+	private int minVelocidad = 2;
+	private int maxVelocidad = 9;
 	private int velocidad;
 	private AnimatedSprite animatedSprite;
+	public final static int DANIO = 1;
 	
 	public Lanza(World world, ScreenRome pantalla, float x, float y, float width, float height) {
 		WIDTH = width;
@@ -73,10 +74,10 @@ public class Lanza implements ContactFilter, ContactListener {
 		rand = new Random();
 		velocidad = minVelocidad + rand.nextInt(maxVelocidad - minVelocidad + 1);
 		
-		body.setLinearVelocity(-velocidad, -9.81f);
+		body.setLinearVelocity(-velocidad, 0);
 		
 		float minAngulo = 0.2f;
-		float maxAngulo = 0.6f;
+		float maxAngulo = 0.4f;
 
 		float angulo = rand.nextFloat() * (maxAngulo - minAngulo) + minAngulo;
 		body.setAngularVelocity(angulo);

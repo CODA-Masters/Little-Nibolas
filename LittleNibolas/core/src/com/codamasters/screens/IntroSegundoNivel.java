@@ -1,6 +1,8 @@
 package com.codamasters.screens;
 
+import com.codamasters.LittleNibolas;
 import com.codamasters.tween.SpriteAccessor;
+
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
@@ -19,6 +21,11 @@ public class IntroSegundoNivel implements Screen {
 	private SpriteBatch batch;
 	private Sprite splash;
 	private TweenManager tweenManager;
+	private LittleNibolas game;
+	
+	public IntroSegundoNivel(LittleNibolas game){
+		this.game = game;
+	}
 	
 
 	@Override
@@ -30,6 +37,9 @@ public class IntroSegundoNivel implements Screen {
 		splash.draw(batch);
 		batch.end();
 
+		if(Gdx.input.justTouched())
+		      ((Game) Gdx.app.getApplicationListener()).setScreen(new ScreenRome(game));
+		
 		tweenManager.update(delta);
 	}
 
@@ -65,7 +75,7 @@ public class IntroSegundoNivel implements Screen {
 
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
-				((Game) Gdx.app.getApplicationListener()).setScreen(new IntroSegundoNivel1());
+				((Game) Gdx.app.getApplicationListener()).setScreen(new IntroSegundoNivel1(game));
 				//((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
 			}
 		}).start(tweenManager);

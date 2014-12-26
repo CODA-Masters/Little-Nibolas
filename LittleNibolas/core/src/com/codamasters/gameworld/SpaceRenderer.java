@@ -103,7 +103,6 @@ public class SpaceRenderer {
  
         // Convert integer into String
         String score="";
-        if(scroller.getTime()>=10 && scroller.getTime()<=86){
         	if(scroller.getTime()==80){
         		score="MODO EXTREMO";
         	}else if(scroller.getTime()==81){
@@ -125,7 +124,7 @@ public class SpaceRenderer {
         	AssetLoaderSpace.shadow.draw(batcher, "" + score , (209/ 2) - (5 * score.length()), midPointY);
             // Draw text
             AssetLoaderSpace.font.draw(batcher, "" + score, (209 / 2) - (5 * score.length() - 1),midPointY);
-        }
+       
         	
         
         score = myWorld.getScore() + "";

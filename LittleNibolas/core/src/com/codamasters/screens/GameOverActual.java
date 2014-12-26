@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -45,6 +46,11 @@ public class GameOverActual implements Screen {
 	private Label puntos, lHighscore;
 	private Sprite splash;
 	private SpriteBatch batch;
+	private LittleNibolas game;
+	
+	public GameOverActual(LittleNibolas game){
+		this.game = game;
+	}
 
 	@Override
 	public void render(float delta) {
@@ -68,6 +74,7 @@ public class GameOverActual implements Screen {
 
 	@Override
 	public void show() {
+		
 		stage = new Stage(new FitViewport(1280,720));
 		Gdx.input.setInputProcessor(stage);
 
@@ -117,7 +124,7 @@ public class GameOverActual implements Screen {
 
 					@Override
 					public void run() {						
-						PantallaActual pant = new PantallaActual();
+						PantallaActual pant = new PantallaActual(game);
 						((Game) Gdx.app.getApplicationListener()).setScreen(pant);
 					}
 				})));
@@ -136,7 +143,7 @@ public class GameOverActual implements Screen {
 					public void run() {
 						AssetLoaderSpace.music_menu.play();
 						AssetLoaderSpace.estrellado.stop();
-						((Game) Gdx.app.getApplicationListener()).setScreen(new LevelMenu());
+						((Game) Gdx.app.getApplicationListener()).setScreen(new LevelMenu(game));
 					}
 				})));
 			}
@@ -187,6 +194,12 @@ public class GameOverActual implements Screen {
 		Tween.from(table, ActorAccessor.Y, .75f).target(Gdx.graphics.getHeight() / 8).start(tweenManager);
 
 		tweenManager.update(Gdx.graphics.getDeltaTime());
+		
+		game.intentos++;
+		if(game.intentos > 1){
+			game.actionResolver.showOrLoadInterstital();
+			game.intentos = 0;
+		}
 	}
 
 	@Override

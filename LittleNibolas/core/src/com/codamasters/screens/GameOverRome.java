@@ -46,6 +46,11 @@ public class GameOverRome implements Screen {
 	private Label puntos, lHighscore;
 	private Sprite splash;
 	private SpriteBatch batch;
+	private LittleNibolas game;
+	
+	public GameOverRome(LittleNibolas game){
+		this.game = game;
+	}
 
 	@Override
 	public void render(float delta) {
@@ -106,7 +111,7 @@ public class GameOverRome implements Screen {
 
 					@Override
 					public void run() {
-						((Game) Gdx.app.getApplicationListener()).setScreen(new ScreenRome());
+						((Game) Gdx.app.getApplicationListener()).setScreen(new ScreenRome(game));
 					}
 				})));
 			}
@@ -125,7 +130,7 @@ public class GameOverRome implements Screen {
 						AssetLoaderSpace.music_menu.play();
 						//AssetLoaderSpace.estrellado.stop();
 						
-						((Game) Gdx.app.getApplicationListener()).setScreen(new LevelMenu());
+						((Game) Gdx.app.getApplicationListener()).setScreen(new LevelMenu(game));
 					}
 				})));
 			}
@@ -165,6 +170,12 @@ public class GameOverRome implements Screen {
 		Tween.from(table, ActorAccessor.Y, .75f).target(Gdx.graphics.getHeight() / 8).start(tweenManager);
 
 		tweenManager.update(Gdx.graphics.getDeltaTime());
+		
+		game.intentos++;
+		if(game.intentos > 1){
+			game.actionResolver.showOrLoadInterstital();
+			game.intentos = 0;
+		}
 	}
 
 	@Override

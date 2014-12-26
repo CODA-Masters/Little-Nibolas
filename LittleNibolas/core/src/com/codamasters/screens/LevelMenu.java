@@ -28,6 +28,11 @@ public class LevelMenu implements Screen {
 	private Stage stage;
 	private Table table;
 	private Skin skin;
+    private LittleNibolas game;
+	
+	public LevelMenu(LittleNibolas game){
+		this.game = game;
+	}
 
 	@Override
 	public void render(float delta) {
@@ -67,7 +72,7 @@ public class LevelMenu implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				AssetLoaderSpace.music_menu.stop();
-				((Game) Gdx.app.getApplicationListener()).setScreen(new IntroPrimerNivel());
+				((Game) Gdx.app.getApplicationListener()).setScreen(new IntroPrimerNivel(game));
 			}
 			
 		});
@@ -79,7 +84,7 @@ public class LevelMenu implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				AssetLoaderSpace.music_menu.stop();
-				((Game) Gdx.app.getApplicationListener()).setScreen(new IntroSegundoNivel());
+				((Game) Gdx.app.getApplicationListener()).setScreen(new IntroSegundoNivel(game));
 			}
 			
 		});
@@ -91,7 +96,7 @@ public class LevelMenu implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				AssetLoaderSpace.music_menu.stop();
-				((Game) Gdx.app.getApplicationListener()).setScreen(new IntroTercerNivel());
+				((Game) Gdx.app.getApplicationListener()).setScreen(new IntroTercerNivel(game));
 			}
 			
 		});
@@ -109,7 +114,7 @@ public class LevelMenu implements Screen {
 					@Override
 					public void run() {
 						//AssetLoaderSpace.music_menu.stop();
-						((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+						((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(game));
 					}
 					
 				})));

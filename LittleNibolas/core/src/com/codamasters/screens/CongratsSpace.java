@@ -4,6 +4,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
+import com.codamasters.LittleNibolas;
 import com.codamasters.LNHelpers.AssetLoaderSpace;
 import com.codamasters.LNHelpers.AssetsLoaderActual;
 import com.codamasters.tween.ActorAccessor;
@@ -34,6 +35,11 @@ public class CongratsSpace implements Screen {
 	private Table table;
 	private TweenManager tweenManager;
 	private Label puntos, lHighscore;
+	private LittleNibolas game;
+	
+	public CongratsSpace(LittleNibolas game){
+		this.game = game;
+	}
 
 	@Override
 	public void render(float delta) {
@@ -92,7 +98,7 @@ public class CongratsSpace implements Screen {
 
 					@Override
 					public void run() {						
-						((Game) Gdx.app.getApplicationListener()).setScreen(new FinTercerNivel1());
+						((Game) Gdx.app.getApplicationListener()).setScreen(new FinTercerNivel1(game));
 					}
 				})));
 			}
@@ -108,7 +114,7 @@ public class CongratsSpace implements Screen {
 					
 					@Override
 					public void run() {
-						((Game) Gdx.app.getApplicationListener()).setScreen(new ScreenSpace());
+						((Game) Gdx.app.getApplicationListener()).setScreen(new ScreenSpace(game));
 					}
 				})));
 			}

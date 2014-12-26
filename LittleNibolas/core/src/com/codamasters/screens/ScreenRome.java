@@ -37,27 +37,26 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
+import com.codamasters.LittleNibolas;
 import com.codamasters.LNHelpers.AnimatedSprite;
 import com.codamasters.LNHelpers.AssetLoaderSpace;
 import com.codamasters.LNHelpers.AssetsLoaderActual;
 import com.codamasters.LNHelpers.AssetsLoaderRome;
 import com.codamasters.LNHelpers.InputHandlerRome;
+import com.codamasters.gameobjects.Escudo;
 import com.codamasters.gameobjects.Horse;
 import com.codamasters.gameobjects.Lanza;
 import com.codamasters.gameobjects.Plataforma;
 import com.codamasters.gameobjects.Soldado;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 
-
-
-
 public class ScreenRome implements Screen{
 	
 	private World world;
 	private Box2DDebugRenderer debugRenderer;
-	private SpriteBatch batch;
-	private ShapeRenderer shapeRenderer;
+	private SpriteBatch batch, batch2;
 	private OrthographicCamera camera;
+	private OrthographicCamera camera2;
 
 	private final float TIMESTEP = 1 / 60f;
 	private final int VELOCITYITERATIONS = 8, POSITIONITERATIONS = 3;
@@ -68,7 +67,6 @@ public class ScreenRome implements Screen{
 	private Fixture fixtureGround;
 	private Array<Lanza> lanzas = new Array<Lanza>();
 	private Array<Soldado> soldados = new Array<Soldado>();
-	boolean muerto;
     private float time=0.0f;
     private float timePlatform =0.0f;
 	private Random rand;
@@ -88,18 +86,33 @@ public class ScreenRome implements Screen{
 	private static Preferences prefs;
 	private static int score=0;
 	private int tiempoPlataforma;
-	
-	private int screenWidth;
-	private int screenHeight;
-	private int gameWidth;
-	private int gameHeight;
+	private float screenWidth;
+	private float screenHeight;
+	private float gameWidth;
+	private float gameHeight;
 	private int midPointY;
+	private Escudo escudo;
+	private boolean recogido;
+	private float tiempoEscudo;
+	private boolean primerEscudo;
+	private int minEscudoX = -9;
+	private int maxEscudoX = 9;
+	private int minTiempoEscudo = 200;
+	private int maxTiempoEscudo = 400;
+	private int tiempoAparicionEscudo;
+	private float tiempoTexto = 0;
+	
+	private LittleNibolas game;
+	
+	public ScreenRome(LittleNibolas game){
+		this.game = game;
+	}
 
 
 	@Override
 	public void render(float delta) {
 		
-		if(!muerto){
+		if(myHorse.getVidas()!=0){
 			
 			Gdx.gl.glClearColor(0, 0, 0, 1);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -108,14 +121,36 @@ public class ScreenRome implements Screen{
 			
 			//camera.position.x = myHorse.getBody().getPosition().x;
 			camera.update();
+			camera2.update();
 		
 			batch.setProjectionMatrix(camera.combined);
+			batch2.setProjectionMatrix(camera2.combined);
+			
 			batch.begin();
+			
+			
 			batch.draw(AssetsLoaderRome.background, camera.position.x-camera.viewportWidth/2, camera.position.y-camera.viewportHeight/2, camera.viewportWidth, camera.viewportHeight);
 			AssetsLoaderRome.animatedSprite.setBounds(myHorse.getBody().getPosition().x-myHorse.WIDTH/2, myHorse.getBody().getPosition().y-myHorse.HEIGHT/2, myHorse.WIDTH, myHorse.HEIGHT);
 			//animatedSprite.setBounds(myHorse.getBody().getPosition().x, myHorse.getBody().getPosition().y,myHorse.WIDTH*1.4f, myHorse.HEIGHT);
 			AssetsLoaderRome.animatedSprite.setKeepSize(true);
 			AssetsLoaderRome.animatedSprite.draw(batch);
+			
+			if(myHorse.getVidas()==2){
+				escudo.destroy();
+				//escudo = new Escudo(world, this, camera.position.x-3*camera.viewportWidth/7, camera.position.y+3*camera.viewportHeight/7, 1f, 1f);
+				escudo = new Escudo(world, this, camera.position.x, -10, 1f, 1f);
+				escudo.setAnimatedSprite(AssetsLoaderRome.animSpriteEscudo);
+				escudo.getAnimatedSprite().setBounds(camera.position.x-3*camera.viewportWidth/7, camera.position.y+3*camera.viewportHeight/8, escudo.HEIGHT/2, escudo.WIDTH);
+				escudo.getAnimatedSprite().setKeepSize(true);
+				escudo.getAnimatedSprite().draw(batch);	
+			}
+			else{
+				escudo.getAnimatedSprite().setBounds(escudo.getBody().getPosition().x - escudo.WIDTH/2, escudo.getBody().getPosition().y-escudo.HEIGHT/4, escudo.HEIGHT/2, escudo.WIDTH);
+				escudo.getAnimatedSprite().setKeepSize(true);
+				escudo.getAnimatedSprite().draw(batch);	
+			}
+			
+			
 			for (Lanza lanza : lanzas) {
 				lanza.getAnimatedSprite().setBounds(lanza.getBody().getPosition().x-lanza.WIDTH/2, lanza.getBody().getPosition().y-lanza.HEIGHT/4, lanza.WIDTH, lanza.HEIGHT/2);
 				lanza.getAnimatedSprite().setKeepSize(true);
@@ -126,6 +161,9 @@ public class ScreenRome implements Screen{
 			plataforma.getAnimatedSprite().setBounds(plataforma.getBody().getPosition().x-plataforma.WIDTH/2, plataforma.getBody().getPosition().y-plataforma.HEIGHT/20, plataforma.WIDTH, plataforma.HEIGHT/12);
 			plataforma.getAnimatedSprite().setKeepSize(true);
 			plataforma.getAnimatedSprite().draw(batch);
+			
+
+				
 			world.getBodies(tmpBodies);
 			for(Body body : tmpBodies)
 				if(body.getUserData() instanceof Sprite) {
@@ -140,13 +178,19 @@ public class ScreenRome implements Screen{
 			sold.getAnimatedSprite().setKeepSize(true);
 			sold.getAnimatedSprite().draw(batch);
 			*/
+			
 		    String scoreText = getScore() + "";
 	        // Draw shadow first
+		    //AssetsLoaderRome.shadow.setScale(0.03f);
+		    //AssetsLoaderRome.shadow.draw(batch, "" + getScore(),camera.position.x-scoreText.length()/2,camera.position.y+camera.viewportHeight/4);
 	        // Draw text
-		    AssetsLoaderRome.font.setScale(0.029f);
-		    AssetsLoaderRome.font.draw(batch, "" + getScore(), camera.position.x-scoreText.length()/2,camera.position.y+camera.viewportHeight/3);
+		    batch.end();
+		    
+		    batch2.begin();
+			AssetsLoaderRome.font.setScale(0.25f);
+			AssetsLoaderRome.font.draw(batch2, "" + getScore(), camera.position.x-scoreText.length()/2,camera.position.y+camera.viewportHeight*4);
+		    batch2.end();
 			
-			batch.end();
 			myHorse.update();
 			
 			
@@ -159,9 +203,7 @@ public class ScreenRome implements Screen{
 				lan.setAnimatedSprite(AssetsLoaderRome.animSpriteFlecha);
 				lanzas.add(lan);
 			}
-			
-
-
+						
 			for (Lanza lanza : lanzas) {
 				if( ( lanza.getBody().getPosition().x < camera.position.x-camera.viewportWidth/2) || (lanza.getBody().getLinearVelocity().y == 0)){
 					lanza.destroy();
@@ -174,17 +216,43 @@ public class ScreenRome implements Screen{
 			
 			timePlatform+=delta;
 			
-			tiempoPlataforma = minTiempoPlataforma + rand.nextInt(maxTiempoPlataforma - minTiempoPlataforma + 1);
 			
 			if(timePlatform>tiempoPlataforma*delta){
 				timePlatform=0;
+				tiempoPlataforma = minTiempoPlataforma + rand.nextInt(maxTiempoPlataforma - minTiempoPlataforma + 1);
 				plataforma.destroy();
+				
 				posX= minPlatX + rand.nextInt(maxPlatX - minPlatX + 1);
 				plataforma = new Plataforma(world, this, posX, -3f, 3f, 1f);
 				plataforma.setAnimatedSprite(AssetsLoaderRome.animSpritePlataforma);
 			}
-		
 			
+			
+			tiempoEscudo+=delta;
+			
+			if(tiempoEscudo>tiempoAparicionEscudo*delta && !primerEscudo){
+				tiempoEscudo=0;
+				primerEscudo=true;
+				escudo.destroy();
+				//escudo = new Escudo(world, this, camera.position.x-3*camera.viewportWidth/7, camera.position.y+3*camera.viewportHeight/7, 1f, 1f);
+				int posEscudoX= minEscudoX + rand.nextInt(maxEscudoX - minEscudoX + 1);
+				while( (posEscudoX > myHorse.getBody().getPosition().x && posEscudoX < myHorse.getBody().getPosition().x+2 ) ||
+				    (posEscudoX < myHorse.getBody().getPosition().x && posEscudoX > myHorse.getBody().getPosition().x-2 )	){
+					posEscudoX= minEscudoX + rand.nextInt(maxEscudoX - minEscudoX + 1);
+				}
+				
+				escudo = new Escudo(world, this, posEscudoX, -4.5f, 1f, 1f);
+				escudo.setAnimatedSprite(AssetsLoaderRome.animSpriteEscudo);
+			}
+			
+			if(win && tiempoTexto < 2){
+				tiempoTexto+=delta;
+				batch2.begin();
+				AssetsLoaderRome.font.setScale(0.25f);
+			    AssetsLoaderRome.font.draw(batch2, "SELFIE CONSEGUIDA", -80,0);
+			    batch2.end();
+			}
+		
     		//for (Soldado sold : soldados) {
     			    			
     			// direccion --> TRUE : VOY A LA IZQUIERDA
@@ -243,12 +311,13 @@ public class ScreenRome implements Screen{
 		AssetsLoaderRome.music_R.stop();
 		AssetsLoaderRome.reloadNibolas();
 		if(win)
-			((Game) Gdx.app.getApplicationListener()).setScreen((new CongratsRome()));
+			((Game) Gdx.app.getApplicationListener()).setScreen((new CongratsRome(game)));
 		else
-			((Game) Gdx.app.getApplicationListener()).setScreen((new GameOverRome()));
+			((Game) Gdx.app.getApplicationListener()).setScreen((new GameOverRome(game)));
 
 		}
-		if(score>=100){
+		if(score==150){
+			AssetsLoaderRome.win.play();
 			win = true;
 			
 		}
@@ -273,9 +342,11 @@ public class ScreenRome implements Screen{
 	                Fixture fixtureB = contact.getFixtureB();
 	                
 	        		for (Lanza lanza : lanzas) {
+	        			
 	        			if(( lanza.getFixture() == fixtureA && myHorse.getFixture()==fixtureB ) || ( lanza.getFixture() == fixtureB && myHorse.getFixture()==fixtureA ) ){
 	        				if(lanza.EsMortal())
-	        					muerto=true;
+	        					myHorse.setVidas(myHorse.getVidas()-lanza.DANIO);
+	        				lanza.getBody().setAngularVelocity(0);
 	        			}
 	        			
 	        			if((lanza.getFixture() == fixtureA && fixtureGround==fixtureB ) || (lanza.getFixture() == fixtureB && fixtureGround==fixtureA )){
@@ -287,6 +358,15 @@ public class ScreenRome implements Screen{
 	        				lanza.getBody().setAngularVelocity(0);
 	        			}
 	        			
+	        			
+	        			
+	        			if(!recogido){
+		        			if((lanza.getFixture() == fixtureA && escudo.getFixture()==fixtureB ) || (lanza.getFixture() == fixtureB && escudo.getFixture()==fixtureA )){
+		        				lanza.getBody().setAngularVelocity(0);
+		        			}
+	        			}
+	        			
+	        			
 	        			/*
 	        			
 	        			if((lanza.getFixture() == fixtureA && sold.getFixture()==fixtureB ) || (lanza.getFixture() == fixtureB && sold.getFixture()==fixtureA )){
@@ -294,6 +374,7 @@ public class ScreenRome implements Screen{
 	        				lanza.setEsMortal(false);
 	        			}
 	        			*/
+	        			
 
 	        		}
 	        		
@@ -301,7 +382,15 @@ public class ScreenRome implements Screen{
 	        			myHorse.setNumSaltos(0);
 	        		}
 	        		
-	        		  
+	        		
+        			if(!recogido){
+		        		if((myHorse.getFixture() == fixtureA && escudo.getFixture()==fixtureB ) || (myHorse.getFixture() == fixtureB && escudo.getFixture()==fixtureA )){
+		        			recogido=true;
+		        			myHorse.setVidas(myHorse.getVidas()+escudo.VIDA);
+		        		}
+        			}
+        			
+	        
 	        		//for (Soldado sold : soldados) {
 	        		
 	        		//	if(( sold.getFixture() == fixtureA && myHorse.getFixture()==fixtureB ) || ( sold.getFixture() == fixtureB && myHorse.getFixture()==fixtureA ) ){
@@ -309,7 +398,6 @@ public class ScreenRome implements Screen{
 	        		//	}
 	        		//}
 
-	        		
 	        		
 	            }
 
@@ -337,29 +425,34 @@ public class ScreenRome implements Screen{
 		screenHeight = 720;
 		gameWidth = 203;
 		gameHeight = screenHeight / (screenWidth / gameWidth);
-		midPointY = gameHeight / 2;
+        midPointY = (int) (gameHeight / 2);
 
         time = 0;
         score = 0;
+        tiempoEscudo=0;
         win = false;
 		
         AssetsLoaderRome.music_R.play();
-		world = new World(new Vector2(0, -9.81f), true);
+		AssetsLoaderRome.reloadNibolas(); // AAAAAAAAAHHHHHHHH !!!!!!!!!!!!!!!
+		
+		world = new World(new Vector2(0, -4.9f), true);
 		debugRenderer = new Box2DDebugRenderer();
 		batch = new SpriteBatch();
-		shapeRenderer = new ShapeRenderer();
-		
+		batch2 = new SpriteBatch();
+	
 
-		
 		rand=new Random();
 		posX= minX + rand.nextInt(maxX - minX + 1);
 		posY= minY + rand.nextFloat()*maxX;
+        tiempoAparicionEscudo = minTiempoEscudo + rand.nextInt(maxTiempoEscudo - minTiempoEscudo + 1);
+
 		Lanza lan = new Lanza(world, this, posX, posY, 1f, 0.5f);
 		lan.setAnimatedSprite(AssetsLoaderRome.animSpriteFlecha);
 
 		lanzas.add(lan);
 		
 		camera = new OrthographicCamera(gameWidth/10, gameHeight/10);
+		camera2 = new OrthographicCamera(gameWidth, gameHeight);
 		
 		myHorse = new Horse(world, this, 0, -5.95f, 1f, 2f);
 				
@@ -368,7 +461,13 @@ public class ScreenRome implements Screen{
 	
 		plataforma = new Plataforma(world, this, 5, -3f, 3f, 1f);
 		plataforma.setAnimatedSprite(AssetsLoaderRome.animSpritePlataforma);
+		tiempoPlataforma = minTiempoPlataforma + rand.nextInt(maxTiempoPlataforma - minTiempoPlataforma + 1);
 		
+		escudo = new Escudo(world, this, -4, -10f, 1f, 1f);
+		escudo.setAnimatedSprite(AssetsLoaderRome.animSpriteEscudo);
+		recogido=false;
+		primerEscudo=false;
+
 		//Soldado sold;
 		/*
 		direc= rand.nextBoolean();
@@ -401,8 +500,8 @@ public class ScreenRome implements Screen{
 		ground = world.createBody(bodyDef);
 		fixtureGround = ground.createFixture(fixtureDef);
 		
-		Plataforma izquierda = new Plataforma(world, this, camera.position.x-camera.viewportWidth/2-0.5f, -6f, 1f, 15f);
-		Plataforma derecha = new Plataforma(world, this, camera.position.x+camera.viewportWidth/2+0.5f, -6f, 1f, 15f);
+		Plataforma izquierda = new Plataforma(world, this, camera.position.x-camera.viewportWidth/2-0.5f, -6f, 1f, 1f);
+		Plataforma derecha = new Plataforma(world, this, camera.position.x+camera.viewportWidth/2+0.5f, -6f, 1f, 1f);
 
         createCollisionListener();
 
@@ -454,14 +553,11 @@ public class ScreenRome implements Screen{
 	}
 	
 	public void restart(){
-		muerto=false;
+		myHorse.setVidas(1);
 		lanzas.clear();
 		show();
 	}
 	
-	public boolean isMuerto(){
-		return muerto;
-	}
 
 	public AnimatedSprite getSprite(){
 		return AssetsLoaderRome.animatedSprite;
