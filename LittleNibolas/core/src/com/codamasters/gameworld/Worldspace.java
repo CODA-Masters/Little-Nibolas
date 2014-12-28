@@ -4,9 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.codamasters.LittleNibolas;
 import com.codamasters.screens.CongratsSpace;
-import com.codamasters.screens.FinTercerNivel1;
 import com.codamasters.screens.GameOverSpace;
-import com.codamasters.screens.LevelMenu;
 import com.codamasters.LNHelpers.AssetLoaderSpace;
 import com.codamasters.gameobjects.Nave;
 import com.codamasters.gameobjects.ScrollHandler;
@@ -71,8 +69,13 @@ public class Worldspace {
             
             
         }
-        if(scroller.getTime()>150){
+        if(scroller.getTime()>=150){
+        	game.actionResolver.unlockAchievement(LittleNibolas.ACHIEVEMENT3);
         	win = true;
+        }
+        
+        if(scroller.getTime()>=250){
+        	game.actionResolver.unlockAchievement(LittleNibolas.ACHIEVEMENT6);
         }
 
         /*if (Intersector.overlaps(myNibolas.getBoundingCircle(), ground)) {

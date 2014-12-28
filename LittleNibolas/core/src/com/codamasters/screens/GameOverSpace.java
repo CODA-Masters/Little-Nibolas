@@ -6,7 +6,6 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 import com.codamasters.LittleNibolas;
 import com.codamasters.LNHelpers.AssetLoaderSpace;
-import com.codamasters.LNHelpers.AssetsLoaderActual;
 import com.codamasters.tween.ActorAccessor;
 import com.codamasters.tween.SpriteAccessor;
 
@@ -19,7 +18,6 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -34,7 +32,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameOverSpace implements Screen {
 
@@ -106,6 +103,7 @@ public class GameOverSpace implements Screen {
 			lHighscore = new Label("Nuevo record !!!",skin);
 			lHighscore.setFontScale(1);
 			AssetLoaderSpace.setHighScore(score);
+			game.actionResolver.submitScore(LittleNibolas.LEADERBOARD_NV3, score);
 		}else{
 			lHighscore = new Label("Puntuacion maxima:" + highscore,skin);
 			lHighscore.setFontScale(1);

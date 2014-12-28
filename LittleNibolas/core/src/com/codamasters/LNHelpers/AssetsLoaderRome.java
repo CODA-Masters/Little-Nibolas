@@ -1,28 +1,13 @@
 package com.codamasters.LNHelpers;
 
-import java.util.Random;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.codamasters.gameobjects.Horse;
-import com.codamasters.gameobjects.Lanza;
-import com.codamasters.gameobjects.Plataforma;
-import com.codamasters.gameobjects.Soldado;
 
 public class AssetsLoaderRome {
 		
@@ -32,7 +17,7 @@ public class AssetsLoaderRome {
     public static BitmapFont font, shadow;
 	public static AnimatedSprite fondo, animSpritePlataforma, animSpriteFlecha, animatedSprite, animSpriteEscudo;
 	public static Music music_R;
-	public static Sound win;
+	public static Sound win, shield, arrow, impact;
 	private static Array<TextureRegion> sprites;
 	
 	public static void load() {
@@ -73,7 +58,7 @@ public class AssetsLoaderRome {
 		animEscudo = new Animation(1f, escudo);
 		animSpriteEscudo = new AnimatedSprite(animEscudo);
 		
-		regionPlataforma = new TextureRegion(new Texture(Gdx.files.internal("data/plataforma.jpg")));
+		regionPlataforma = new TextureRegion(new Texture(Gdx.files.internal("data/plataforma.png")));
 		animPlataforma = new Animation(1f, regionPlataforma);
 		animSpritePlataforma = new AnimatedSprite(animPlataforma);
 		
@@ -85,6 +70,9 @@ public class AssetsLoaderRome {
 		music_R.setLooping(true);
 		
 		win = Gdx.audio.newSound(Gdx.files.internal("data/tada.mp3"));
+		shield = Gdx.audio.newSound(Gdx.files.internal("data/getitem.wav"));
+		arrow = Gdx.audio.newSound(Gdx.files.internal("data/arrow.wav"));
+		impact = Gdx.audio.newSound(Gdx.files.internal("data/shieldhit.wav"));
 		
 	}
 	
@@ -118,6 +106,10 @@ public class AssetsLoaderRome {
     	shadow.dispose();
     	backgroundTexture.dispose();
     	music_R.dispose();
+    	win.dispose();
+    	arrow.dispose();
+    	shield.dispose();
+    	impact.dispose();
     	
     	
 	}

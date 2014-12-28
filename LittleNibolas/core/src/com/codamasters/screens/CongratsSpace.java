@@ -79,10 +79,20 @@ public class CongratsSpace implements Screen {
 		
 		puntos = new Label("Puntuacion obtenida:" + score,skin);
 		puntos.setFontScale(1);
+		
+		if(AssetsLoaderActual.getHighScore() < 10000 && ScreenRome.getHighScore()>=150
+				&& AssetLoaderSpace.getHighScore() >= 150){
+			game.actionResolver.unlockAchievement(LittleNibolas.ACHIEVEMENT7);
+		}
+		
 		if(score > highscore){
 			lHighscore = new Label("Nuevo record !!!",skin);
 			lHighscore.setFontScale(1);
 			AssetLoaderSpace.setHighScore(score);
+			game.actionResolver.submitScore(LittleNibolas.LEADERBOARD_NV3, score);
+			if(score >= 250){
+				game.actionResolver.unlockAchievement(LittleNibolas.ACHIEVEMENT6);
+			}
 		}else{
 			lHighscore = new Label("Puntuacion maxima:" + highscore,skin);
 			lHighscore.setFontScale(1);

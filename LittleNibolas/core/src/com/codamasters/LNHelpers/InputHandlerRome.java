@@ -1,6 +1,6 @@
 package com.codamasters.LNHelpers;
 
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.InputProcessor;
 import com.codamasters.gameobjects.Horse;
 import com.codamasters.screens.ScreenRome;

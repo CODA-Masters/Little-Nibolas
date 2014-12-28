@@ -1,6 +1,5 @@
 package com.codamasters.gameobjects;
 
-import com.badlogic.gdx.Gdx;
 
 import com.codamasters.gameworld.Worldspace;
 

@@ -2,31 +2,18 @@ package com.codamasters.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.ChainShape;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -34,13 +21,11 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
 import com.codamasters.LittleNibolas;
 import com.codamasters.LNHelpers.AnimatedSprite;
 import com.codamasters.LNHelpers.AssetsLoaderActual;
-import com.codamasters.LNHelpers.AssetsLoaderRome;
 import com.codamasters.LNHelpers.InputHandler;
 import com.codamasters.gameobjects.Ball;
 import com.codamasters.gameobjects.BallsTrap;
@@ -55,10 +40,8 @@ public class PantallaActual implements Screen{
 	private LittleNibolas game;
 	private World world;
 	private Box2DDebugRenderer debugRenderer;
-	private SpriteBatch batch;
-	private ShapeRenderer shapeRenderer;
-	private OrthographicCamera camera;
-	private float runTime;
+	private SpriteBatch batch, batch2;
+	private OrthographicCamera camera, camera2;
 	private int score, inc;
 	
 	private static Animation nibolasAnimation;
@@ -102,14 +85,12 @@ public class PantallaActual implements Screen{
 	private Bin bin;
 	private BallsTrap trap;
 	private boolean hide;
-	private boolean insideBin;
 	private PantallaActual pantalla;
-	private boolean movAng;
 	private int lastBin;
 	private boolean stop;
 	private float fondoY;
 	private float groundPos;
-	
+	private Body ground;
 	public PantallaActual(LittleNibolas game){
 		
 		this.game = game;
@@ -119,20 +100,19 @@ public class PantallaActual implements Screen{
 		float gameWidth = 203;
 		float gameHeight = screenHeight / (screenWidth / gameWidth);
 		
-		runTime = 0;
 		inc = 0;
 		score = 0;
 		hide = false;
-		insideBin = false;
 		pantalla = this;
 		world = new World(new Vector2(0, -9.81f), true);
 		debugRenderer = new Box2DDebugRenderer();
-		shapeRenderer = new ShapeRenderer();
 		batch = new SpriteBatch();
+		batch2 = new SpriteBatch();
 		lastBin = -1;
 		stop = false;
 		
 		camera = new OrthographicCamera(gameWidth/15, gameHeight/15);
+		camera2 = new OrthographicCamera(gameWidth, gameHeight);
 		
 		groundPos = -2;
 		
@@ -197,7 +177,7 @@ public class PantallaActual implements Screen{
 		fixtureDef.restitution = 0;
 		fixtureDef.density = 2.5f;
 
-		Body ground = world.createBody(bodyDef);
+		ground = world.createBody(bodyDef);
 		ground.createFixture(fixtureDef);
 		
 		groundShape.dispose();
@@ -455,7 +435,6 @@ public class PantallaActual implements Screen{
 		inc+=1;
     	if(inc%60==0){
     		addScore(1);
-    		runTime+=1;
     		inc=0;
     	}
 		Gdx.gl.glClearColor(90 / 255f, 89 / 255f, 94 / 255f, 1);
@@ -481,6 +460,7 @@ public class PantallaActual implements Screen{
 		fondoY = camera.position.y-camera.viewportHeight/2;
 
 		batch.setProjectionMatrix(camera.combined);
+		batch2.setProjectionMatrix(camera2.combined);
 		batch.begin();
 		
 		
@@ -560,11 +540,17 @@ public class PantallaActual implements Screen{
 			}
 		}
 		
+		batch2.begin();
+		AssetsLoaderActual.font.setScale(0.2f);
+		AssetsLoaderActual.font.draw(batch2, "Tiempo: " + score, camera.viewportWidth/2,camera.position.y+camera.viewportHeight*6);
+	    batch2.end();
 		
 		//debugRenderer.render(world, camera.combined);
 
 
-		if(stop) stop();
+		if(stop){
+			stop();
+		}
 		
 		// CONDICIÓN DE ACABAR NIVEL
 		
@@ -620,8 +606,14 @@ public class PantallaActual implements Screen{
                 			Array<Ball> balls = trap.getBalls();
                 			for(Ball ball : balls){
 				                if((ball.getFixture() == fixtureA && myNibolas.getFixture()==fixtureB ) || ( ball.getFixture() == fixtureB && myNibolas.getFixture()==fixtureA ) ){
+				                	AssetsLoaderActual.punch.play();
 				                	stop =  true;
 				                }
+				                
+				                if((ball.getFixture() == fixtureA && ground.getFixtureList().get(0)==fixtureB ) || ( ball.getFixture() == fixtureB && ground.getFixtureList().get(0)==fixtureA ) ){
+				                	AssetsLoaderActual.bouncingBall.play();
+				                }
+				                
                 			}
                 		}
                 	}

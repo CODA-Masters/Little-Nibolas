@@ -38,7 +38,7 @@ public class IntroTercerNivel implements Screen {
 		batch.end();
 
 		if(Gdx.input.justTouched())
-		      ((Game) Gdx.app.getApplicationListener()).setScreen(new ScreenSpace(game));
+		      ((Game) Gdx.app.getApplicationListener()).setScreen(new Instrucciones4(game));
 		
 		tweenManager.update(delta);
 	}

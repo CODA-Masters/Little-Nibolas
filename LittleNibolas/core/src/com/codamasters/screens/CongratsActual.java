@@ -73,16 +73,29 @@ public class CongratsActual implements Screen {
 		Label heading = new Label("Enhorabuena", skin, "big");
 		heading.setFontScale(2);
 		
+		game.actionResolver.unlockAchievement(LittleNibolas.ACHIEVEMENT1);
 		
 		int score = AssetsLoaderActual.getScore();
 		int highscore = AssetsLoaderActual.getHighScore();
 		
 		puntos = new Label("Puntuacion obtenida:" + score,skin);
 		puntos.setFontScale(1);
+		
+		if(score <= 60){
+			game.actionResolver.unlockAchievement(LittleNibolas.ACHIEVEMENT4);
+		}
+		
+		if(AssetsLoaderActual.getHighScore() < 10000 && ScreenRome.getHighScore()>=150
+				&& AssetLoaderSpace.getHighScore() >= 150){
+			game.actionResolver.unlockAchievement(LittleNibolas.ACHIEVEMENT7);
+		}
+		
 		if(score < highscore){
 			lHighscore = new Label("Nuevo record !!!",skin);
 			lHighscore.setFontScale(1);
 			AssetsLoaderActual.setHighScore(score);
+			game.actionResolver.submitScore(LittleNibolas.LEADERBOARD_NV1, score);
+			
 		}else{
 			lHighscore = new Label("Puntuacion maxima:" + highscore,skin);
 			lHighscore.setFontScale(1);

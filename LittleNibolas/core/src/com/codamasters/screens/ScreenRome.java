@@ -4,26 +4,14 @@ import java.util.Random;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -34,13 +22,10 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.Array;
 import com.codamasters.LittleNibolas;
 import com.codamasters.LNHelpers.AnimatedSprite;
-import com.codamasters.LNHelpers.AssetLoaderSpace;
-import com.codamasters.LNHelpers.AssetsLoaderActual;
 import com.codamasters.LNHelpers.AssetsLoaderRome;
 import com.codamasters.LNHelpers.InputHandlerRome;
 import com.codamasters.gameobjects.Escudo;
@@ -50,13 +35,15 @@ import com.codamasters.gameobjects.Plataforma;
 import com.codamasters.gameobjects.Soldado;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 
+
+
+
 public class ScreenRome implements Screen{
 	
 	private World world;
 	private Box2DDebugRenderer debugRenderer;
 	private SpriteBatch batch, batch2;
-	private OrthographicCamera camera;
-	private OrthographicCamera camera2;
+	private OrthographicCamera camera, camera2;
 
 	private final float TIMESTEP = 1 / 60f;
 	private final int VELOCITYITERATIONS = 8, POSITIONITERATIONS = 3;
@@ -101,13 +88,14 @@ public class ScreenRome implements Screen{
 	private int maxTiempoEscudo = 400;
 	private int tiempoAparicionEscudo;
 	private float tiempoTexto = 0;
+
 	
 	private LittleNibolas game;
 	
 	public ScreenRome(LittleNibolas game){
 		this.game = game;
 	}
-
+	
 
 	@Override
 	public void render(float delta) {
@@ -126,6 +114,8 @@ public class ScreenRome implements Screen{
 			batch.setProjectionMatrix(camera.combined);
 			batch2.setProjectionMatrix(camera2.combined);
 			
+			
+		
 			batch.begin();
 			
 			
@@ -179,13 +169,10 @@ public class ScreenRome implements Screen{
 			sold.getAnimatedSprite().draw(batch);
 			*/
 			
+			batch.end();
+
 		    String scoreText = getScore() + "";
-	        // Draw shadow first
-		    //AssetsLoaderRome.shadow.setScale(0.03f);
-		    //AssetsLoaderRome.shadow.draw(batch, "" + getScore(),camera.position.x-scoreText.length()/2,camera.position.y+camera.viewportHeight/4);
-	        // Draw text
-		    batch.end();
-		    
+			
 		    batch2.begin();
 			AssetsLoaderRome.font.setScale(0.25f);
 			AssetsLoaderRome.font.draw(batch2, "" + getScore(), camera.position.x-scoreText.length()/2,camera.position.y+camera.viewportHeight*4);
@@ -202,14 +189,14 @@ public class ScreenRome implements Screen{
 				Lanza lan = new Lanza(world, this, posX+camera.position.x+camera.viewportWidth/2+posX, posY, 1f, 0.5f);
 				lan.setAnimatedSprite(AssetsLoaderRome.animSpriteFlecha);
 				lanzas.add(lan);
-			}
-						
+			}			
 			for (Lanza lanza : lanzas) {
 				if( ( lanza.getBody().getPosition().x < camera.position.x-camera.viewportWidth/2) || (lanza.getBody().getLinearVelocity().y == 0)){
 					lanza.destroy();
 					posX= minX + rand.nextInt(maxX - minX + 1);
 					posY= minY + rand.nextFloat()*maxX;
-					lanza = new Lanza(world, this, camera.position.x+camera.viewportWidth/2+posX, posY, 1f, 0.5f);		
+					lanza = new Lanza(world, this, camera.position.x+camera.viewportWidth/2+posX, posY, 1f, 0.5f);
+					AssetsLoaderRome.arrow.play();
 					addScore();
 					}
 			}
@@ -230,7 +217,7 @@ public class ScreenRome implements Screen{
 			
 			tiempoEscudo+=delta;
 			
-			if(tiempoEscudo>tiempoAparicionEscudo*delta && !primerEscudo){
+			if(tiempoEscudo>tiempoAparicionEscudo*delta && myHorse.getVidas()==1){
 				tiempoEscudo=0;
 				primerEscudo=true;
 				escudo.destroy();
@@ -251,6 +238,16 @@ public class ScreenRome implements Screen{
 				AssetsLoaderRome.font.setScale(0.25f);
 			    AssetsLoaderRome.font.draw(batch2, "SELFIE CONSEGUIDA", -80,0);
 			    batch2.end();
+			}
+			
+			if(score==150 && !win){
+				game.actionResolver.unlockAchievement(LittleNibolas.ACHIEVEMENT2);
+				AssetsLoaderRome.win.play();
+				win = true;
+			}
+			
+			if(score==500){
+				game.actionResolver.unlockAchievement(LittleNibolas.ACHIEVEMENT5);
 			}
 		
     		//for (Soldado sold : soldados) {
@@ -310,16 +307,12 @@ public class ScreenRome implements Screen{
 		setScore(score);
 		AssetsLoaderRome.music_R.stop();
 		AssetsLoaderRome.reloadNibolas();
+		
 		if(win)
 			((Game) Gdx.app.getApplicationListener()).setScreen((new CongratsRome(game)));
 		else
 			((Game) Gdx.app.getApplicationListener()).setScreen((new GameOverRome(game)));
 
-		}
-		if(score==150){
-			AssetsLoaderRome.win.play();
-			win = true;
-			
 		}
 		
 	}
@@ -344,8 +337,13 @@ public class ScreenRome implements Screen{
 	        		for (Lanza lanza : lanzas) {
 	        			
 	        			if(( lanza.getFixture() == fixtureA && myHorse.getFixture()==fixtureB ) || ( lanza.getFixture() == fixtureB && myHorse.getFixture()==fixtureA ) ){
-	        				if(lanza.EsMortal())
+	        				if(lanza.EsMortal()){
+	        					AssetsLoaderRome.impact.play();
 	        					myHorse.setVidas(myHorse.getVidas()-lanza.DANIO);
+	        					recogido=false;
+	        					tiempoEscudo=0;
+
+	        				}
 	        				lanza.getBody().setAngularVelocity(0);
 	        			}
 	        			
@@ -387,6 +385,7 @@ public class ScreenRome implements Screen{
 		        		if((myHorse.getFixture() == fixtureA && escudo.getFixture()==fixtureB ) || (myHorse.getFixture() == fixtureB && escudo.getFixture()==fixtureA )){
 		        			recogido=true;
 		        			myHorse.setVidas(myHorse.getVidas()+escudo.VIDA);
+		        			AssetsLoaderRome.shield.play();
 		        		}
         			}
         			
@@ -558,7 +557,6 @@ public class ScreenRome implements Screen{
 		show();
 	}
 	
-
 	public AnimatedSprite getSprite(){
 		return AssetsLoaderRome.animatedSprite;
 	}
@@ -593,6 +591,5 @@ public class ScreenRome implements Screen{
 		world.dispose();
 		debugRenderer.dispose();
 	}
-	
 	
 }

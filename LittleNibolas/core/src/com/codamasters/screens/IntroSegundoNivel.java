@@ -38,7 +38,7 @@ public class IntroSegundoNivel implements Screen {
 		batch.end();
 
 		if(Gdx.input.justTouched())
-		      ((Game) Gdx.app.getApplicationListener()).setScreen(new ScreenRome(game));
+		      ((Game) Gdx.app.getApplicationListener()).setScreen(new Instrucciones3(game));
 		
 		tweenManager.update(delta);
 	}

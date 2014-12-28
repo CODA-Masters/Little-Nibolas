@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">LittleNibolas</string>
+    <string name="app_name">Little Nibolas</string>
+    <string name="app_id">305710418515</string>
 
 </resources>

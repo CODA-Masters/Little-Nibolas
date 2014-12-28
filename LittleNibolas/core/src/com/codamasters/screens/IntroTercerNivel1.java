@@ -38,7 +38,7 @@ public class IntroTercerNivel1 implements Screen {
 		batch.end();
 
 		if(Gdx.input.justTouched())
-		      ((Game) Gdx.app.getApplicationListener()).setScreen(new ScreenSpace(game));
+		      ((Game) Gdx.app.getApplicationListener()).setScreen(new Instrucciones4(game));
 		
 		tweenManager.update(delta);
 	}
@@ -75,7 +75,7 @@ public class IntroTercerNivel1 implements Screen {
 
 			@Override
 			public void onEvent(int type, BaseTween<?> source) {
-				((Game) Gdx.app.getApplicationListener()).setScreen(new ScreenSpace(game));
+				((Game) Gdx.app.getApplicationListener()).setScreen(new Instrucciones4(game));
 				//((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
 			}
 		}).start(tweenManager);

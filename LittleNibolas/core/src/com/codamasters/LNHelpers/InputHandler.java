@@ -1,6 +1,5 @@
 package com.codamasters.LNHelpers;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.codamasters.gameobjects.Nibolas;

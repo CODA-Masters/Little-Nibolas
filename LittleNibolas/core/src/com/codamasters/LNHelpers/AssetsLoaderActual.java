@@ -3,13 +3,13 @@ package com.codamasters.LNHelpers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Array;
 
 public class AssetsLoaderActual {
 	
@@ -23,6 +23,7 @@ public class AssetsLoaderActual {
 	public static Animation nibolasAnimation, staticNibolas, nibolasAnimationCpy, staticCamara, staticCamaraCpy, guardiaAnimation,
 	guardiaAnimationCpy, binAnimation, staticBin, staticBall;
 	public static Music music_E1;
+	public static Sound bouncingBall, punch;
 	private static Preferences prefs;
 	public static BitmapFont font, shadow;
 	
@@ -151,6 +152,9 @@ public class AssetsLoaderActual {
 		music_E1 = Gdx.audio.newMusic(Gdx.files.internal("data/Musica.mp3"));
         music_E1.setLooping(true);
         
+        bouncingBall = Gdx.audio.newSound(Gdx.files.internal("data/bounce.wav"));
+        punch = Gdx.audio.newSound(Gdx.files.internal("data/punch.mp3"));
+        
         prefs = Gdx.app.getPreferences("LittleNibolas");
         
         
@@ -179,6 +183,8 @@ public class AssetsLoaderActual {
 		ofibg4.dispose();
 		tBall.dispose();
 		music_E1.dispose();
+		bouncingBall.dispose();
+		punch.dispose();
 	}
     
     public static Preferences getPref(){
