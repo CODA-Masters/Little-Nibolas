@@ -6,7 +6,9 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 import com.codamasters.LittleNibolas;
 import com.codamasters.LNHelpers.AssetLoaderSpace;
+import com.codamasters.LNHelpers.AssetsLoaderRome;
 import com.codamasters.tween.ActorAccessor;
+
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
@@ -78,15 +80,15 @@ public class GameOverRome implements Screen {
 		heading.setFontScale(3);
 		
 		
-		int score = ScreenRome.getScore();
-		int highscore = ScreenRome.getHighScore();
+		int score = AssetsLoaderRome.getScore();
+		int highscore = AssetsLoaderRome.getHighScore();
 		
 		puntos = new Label("Puntuacion obtenida:" + score,skin);
 		puntos.setFontScale(1);
 		if(score > highscore){
 			lHighscore = new Label("Nuevo record !!!",skin);
 			lHighscore.setFontScale(1);
-			ScreenRome.setHighScore(score);
+			AssetsLoaderRome.setHighScore(score);
 			game.actionResolver.submitScore(LittleNibolas.LEADERBOARD_NV2, score);
 		}else{
 			lHighscore = new Label("Puntuacion maxima:" + highscore,skin);

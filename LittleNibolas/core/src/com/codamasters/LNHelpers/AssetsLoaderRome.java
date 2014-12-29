@@ -1,6 +1,7 @@
 package com.codamasters.LNHelpers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,6 +20,7 @@ public class AssetsLoaderRome {
 	public static Music music_R;
 	public static Sound win, shield, arrow, impact;
 	private static Array<TextureRegion> sprites;
+	private static Preferences prefs;
 	
 	public static void load() {
 		
@@ -74,6 +76,15 @@ public class AssetsLoaderRome {
 		arrow = Gdx.audio.newSound(Gdx.files.internal("data/arrow.wav"));
 		impact = Gdx.audio.newSound(Gdx.files.internal("data/shieldhit.wav"));
 		
+		prefs = Gdx.app.getPreferences("LittleNibolas");
+        
+        if (!prefs.contains("ScoreRoma")) {
+            prefs.putInteger("ScoreRoma", 0);
+        }
+        if (!prefs.contains("HighScoreRoma")) {
+            prefs.putInteger("HighScoreRoma", 0);
+        }
+		
 	}
 	
 	public static void reloadNibolas(){		
@@ -98,6 +109,7 @@ public class AssetsLoaderRome {
 		animation = new Animation(1/12f, sprites);
 		animation.setPlayMode(Animation.PlayMode.LOOP);
 		animatedSprite = new AnimatedSprite(animation);
+		
 	}
 	
     public static void dispose() {
@@ -112,6 +124,26 @@ public class AssetsLoaderRome {
     	impact.dispose();
     	
     	
+	}
+    
+    public static Preferences getPref(){
+    	return prefs;
+    }
+    public static int getScore() {
+    	return prefs.getInteger("ScoreRoma");
+	}
+    
+	public static void setHighScore(int val) {
+	    prefs.putInteger("HighScoreRoma", val);
+	    prefs.flush();
+	}
+	public static void setScore(int val) {
+	    prefs.putInteger("ScoreRoma", val);
+	    prefs.flush();
+	}
+	
+	public static int getHighScore() {
+	    return prefs.getInteger("HighScoreRoma");
 	}
 
 }

@@ -79,6 +79,8 @@ public class AssetLoaderSpace {
             prefs.putInteger("HighScore", 0);
         }
         
+        prefs = Gdx.app.getPreferences("LittleNibolas");
+        
     }
    
     public static Preferences getPref(){

@@ -75,13 +75,13 @@ public class CongratsRome implements Screen {
 		heading.setFontScale(2);
 		
 		
-		int score = ScreenRome.getScore();
-		int highscore = ScreenRome.getHighScore();
+		int score = AssetsLoaderRome.getScore();
+		int highscore = AssetsLoaderRome.getHighScore();
 		
 		puntos = new Label("Puntuacion obtenida:" + score,skin);
 		puntos.setFontScale(1);
 		
-		if(AssetsLoaderActual.getHighScore() < 10000 && ScreenRome.getHighScore()>=150
+		if(AssetsLoaderActual.getHighScore() < 10000 && AssetsLoaderRome.getHighScore()>=150
 				&& AssetLoaderSpace.getHighScore() >= 150){
 			game.actionResolver.unlockAchievement(LittleNibolas.ACHIEVEMENT7);
 		}
@@ -89,7 +89,7 @@ public class CongratsRome implements Screen {
 		if(score > highscore){
 			lHighscore = new Label("Nuevo record !!!",skin);
 			lHighscore.setFontScale(1);
-			ScreenRome.setHighScore(score);
+			AssetsLoaderRome.setHighScore(score);
 			game.actionResolver.submitScore(LittleNibolas.LEADERBOARD_NV2, score);
 			
 		}else{

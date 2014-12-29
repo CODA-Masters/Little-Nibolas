@@ -69,12 +69,12 @@ public class Worldspace {
             
             
         }
-        if(scroller.getTime()>=150){
+        if(scroller.getTime()==150){
         	game.actionResolver.unlockAchievement(LittleNibolas.ACHIEVEMENT3);
         	win = true;
         }
         
-        if(scroller.getTime()>=250){
+        if(scroller.getTime()==250){
         	game.actionResolver.unlockAchievement(LittleNibolas.ACHIEVEMENT6);
         }
 

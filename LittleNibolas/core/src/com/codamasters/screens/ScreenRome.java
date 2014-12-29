@@ -100,7 +100,7 @@ public class ScreenRome implements Screen{
 	@Override
 	public void render(float delta) {
 		
-		if(myHorse.getVidas()!=0){
+		if(myHorse.getVidas()>0){
 			
 			Gdx.gl.glClearColor(0, 0, 0, 1);
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -171,11 +171,11 @@ public class ScreenRome implements Screen{
 			
 			batch.end();
 
-		    String scoreText = getScore() + "";
+		    String scoreText = score + "";
 			
 		    batch2.begin();
 			AssetsLoaderRome.font.setScale(0.25f);
-			AssetsLoaderRome.font.draw(batch2, "" + getScore(), camera.position.x-scoreText.length()/2,camera.position.y+camera.viewportHeight*4);
+			AssetsLoaderRome.font.draw(batch2, "" + score, camera.position.x-scoreText.length()/2,camera.position.y+camera.viewportHeight*4);
 		    batch2.end();
 			
 			myHorse.update();
@@ -304,7 +304,7 @@ public class ScreenRome implements Screen{
 	        batch.end();
 	        */
 						
-		setScore(score);
+		AssetsLoaderRome.setScore(score);
 		AssetsLoaderRome.music_R.stop();
 		AssetsLoaderRome.reloadNibolas();
 		
@@ -507,15 +507,6 @@ public class ScreenRome implements Screen{
 		
 		groundShape.dispose();
 		
-	
-        prefs = Gdx.app.getPreferences("LittleNibolas");
-        
-        if (!prefs.contains("ScoreRoma")) {
-            prefs.putInteger("ScoreRoma", 0);
-        }
-        if (!prefs.contains("HighScoreRoma")) {
-            prefs.putInteger("HighScoreRoma", 0);
-        }
 		
 		Gdx.input.setInputProcessor(new InputHandlerRome(this,gameWidth/10,gameHeight/10));
 		
@@ -562,25 +553,6 @@ public class ScreenRome implements Screen{
 	}
 	
 	   
-    public static Preferences getPref(){
-    	return prefs;
-    }
-    public static int getScore() {
-	    return score;
-	}
-    
-	public static void setHighScore(int val) {
-	    prefs.putInteger("HighScoreRoma", val);
-	    prefs.flush();
-	}
-	public static void setScore(int val) {
-	    prefs.putInteger("ScoreRoma", val);
-	    prefs.flush();
-	}
-	
-	public static int getHighScore() {
-	    return prefs.getInteger("HighScoreRoma");
-	}
 	
 	public void addScore(){
 		score+=1;

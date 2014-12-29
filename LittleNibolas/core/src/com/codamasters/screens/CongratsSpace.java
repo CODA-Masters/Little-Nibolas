@@ -7,6 +7,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import com.codamasters.LittleNibolas;
 import com.codamasters.LNHelpers.AssetLoaderSpace;
 import com.codamasters.LNHelpers.AssetsLoaderActual;
+import com.codamasters.LNHelpers.AssetsLoaderRome;
 import com.codamasters.tween.ActorAccessor;
 
 import aurelienribon.tweenengine.Timeline;
@@ -80,7 +81,7 @@ public class CongratsSpace implements Screen {
 		puntos = new Label("Puntuacion obtenida:" + score,skin);
 		puntos.setFontScale(1);
 		
-		if(AssetsLoaderActual.getHighScore() < 10000 && ScreenRome.getHighScore()>=150
+		if(AssetsLoaderActual.getHighScore() < 10000 && AssetsLoaderRome.getHighScore()>=150
 				&& AssetLoaderSpace.getHighScore() >= 150){
 			game.actionResolver.unlockAchievement(LittleNibolas.ACHIEVEMENT7);
 		}
